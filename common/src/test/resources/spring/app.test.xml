@@ -18,7 +18,7 @@
 			expression="org.springframework.stereotype.Component" />
 	</context:component-scan>
 	<context:property-placeholder
-		ignore-unresolvable="true" location="classpath:pf.dev.data.properties" />
+		ignore-unresolvable="true" location="classpath:pb.dev.data.properties" />
 		<import resource="classpath:/spring/pb.dao.xml" />
 	<import resource="classpath:/spring/pb.mongo.xml" />
 	<import resource="classpath:/spring/pb.redis.xml" />

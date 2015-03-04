@@ -54,6 +54,7 @@ public class SimpleController {
 		String ret = helloService.say(name);
 		return name;
 	}
+	
 	@Entity(code="pb_custom_param")
 	public static class CustomParam implements IValueObject{
 

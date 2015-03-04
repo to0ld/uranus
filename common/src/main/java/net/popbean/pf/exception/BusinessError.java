@@ -16,6 +16,7 @@ public class BusinessError extends RemoteException {
 	public static final String MSG_NORMAL = "系统异常，请与运维人员联系";//FIXME 其实这么写是很不负责任的
 	//
 	private ErrorCate _cate = ErrorCate.SYS;//默认为系统异常
+	public String code ;
 	public String msg;
 	//
 	public BusinessError(){

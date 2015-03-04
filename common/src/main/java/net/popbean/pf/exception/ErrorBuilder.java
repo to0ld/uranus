@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ErrorBuilder {
 	public ErrorCate cate;
 	public String msg;//用于扔到前台，但给技术看的信息
+	private String _code;
 	public Throwable cause;
 	//
 	public static ErrorBuilder createSys(){
@@ -40,6 +41,10 @@ public class ErrorBuilder {
 		this.msg = value;
 		return this;
 	}
+	public ErrorBuilder code(String value){
+		this._code = value;
+		return this;
+	}
 	public ErrorBuilder cause(Throwable cause){
 		this.cause = cause;
 		return this;
@@ -55,15 +60,15 @@ public class ErrorBuilder {
 	public BusinessError build(){
 		BusinessError error = null;
 		if(this.cause == null){
-			error = new BusinessError(this.cate);	
+			error = new BusinessError(this.cate);
 		}else{
 			if(this.cause instanceof BusinessError){
 				error = (BusinessError)this.cause;
 			}else{
 				error = new BusinessError(this.cate,this.cause);	
 			}
-			
 		}
+		error.code = this._code;
 		if(!StringUtils.isBlank(this.msg)){
 			if(StringUtils.isBlank(error.msg)){
 				error.msg = this.msg+"\n";	

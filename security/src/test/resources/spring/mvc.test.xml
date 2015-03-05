@@ -66,17 +66,6 @@
 			<mvc:mapping path="/login/**" />
 			<bean class="net.popbean.pf.mvc.interceptor.TraceInterceptor" />
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/testcase/**" />
-			<mvc:mapping path="/it/**" />
-			<mvc:mapping path="/api/**" />
-			<mvc:mapping path="/pf/**" />
-			<mvc:mapping path="/service/**" />
-			<mvc:mapping path="/node/**" />
-			<mvc:mapping path="/view/**" />
-			<mvc:mapping path="/login/**" />
-			<bean class="net.popbean.pf.mvc.interceptor.access.AccessTokenInterceptor" />
-		</mvc:interceptor>
 	</mvc:interceptors>
 	<!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
 	<!-- 需要apache common file upload <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
@@ -120,4 +109,5 @@
 	</bean>
 	<context:property-placeholder
 		ignore-unresolvable="true" location="classpath:pb.dev.data.properties" />
+		<import resource="classpath:spring/mvc.secukrity.xml"/>
 </beans>

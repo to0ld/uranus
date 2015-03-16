@@ -109,13 +109,10 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 		}
 		return false;
 	}
-
-	@Override
-	public List<String> diffDbStructByEntityModel(Class<? extends IValueObject> clazz) throws BusinessError {
+	private List<String> diffDbStructByEntityModel(EntityModel tm) throws BusinessError {
 		try {
 
 			List<String> ret = new ArrayList<String>();
-			EntityModel tm = EntityModelHelper.build(clazz);
 			boolean flag = _commondao.isExists(tm.code, null);// 可以换成是entitymanager么？否，因为刚开始的时候连entitymanager要访问的表都没有，访问个屁啊
 			if (!flag) {// 不存在，插入一个
 				String temp = _esDao.buildCreateTableSql(tm);// 创建
@@ -154,6 +151,16 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 		}
 		return null;
 	}
+	@Override
+	public List<String> diffDbStructByEntityModel(Class<? extends IValueObject> clazz) throws BusinessError {
+		try {
+			EntityModel tm = EntityModelHelper.build(clazz);
+			return diffDbStructByEntityModel(tm);
+		} catch (Exception e) {
+			processError(e);
+		}
+		return null;
+	}
 
 	@Override
 	public EntityModel buildEntityModelByDbStruct(String entity_code) throws BusinessError {
@@ -164,20 +171,19 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 		}
 		return null;
 	}
-
 	@Override
 	public void syncDbStructByEntityModel(List<EntityModel> em_list, SecuritySession session) throws BusinessError {
 		try {
 			List<JSONObject> list = new ArrayList<>();
 			for (EntityModel tm : em_list) {
 				JSONObject jo = new JSONObject();
-				jo.put("CODE_ENTITY", tm.code);
+				jo.put("code", tm.code);
 				list.add(jo);
-				List<String> sqls = diffDbStructByEntityModel((Class<IValueObject>) Class.forName(tm.clazz));
+				List<String> sqls = diffDbStructByEntityModel(tm);
 				_commondao.batch(sqls);
 			}
 			// 更新状态
-			StringBuilder sql = new StringBuilder(" update pb_pf_entity set istat=5 where code_entity=${CODE_ENTITY} ");
+			StringBuilder sql = new StringBuilder(" update pb_pf_entity set status=5 where code=${code} ");
 			_commondao.batch(sql, list);
 		} catch (Exception e) {
 			processError(e);
@@ -199,7 +205,7 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 	private String syncEntityModel(EntityModel em, SecuritySession session) throws BusinessError {
 		try {
 
-			String pk_entity = em.pk_entity;
+			String pk_entity = em.id;
 
 			// 2- 修改：无论entity_code是否发生变化，统一用原来的主键删除
 			List<FieldModel> field_list = em.field_list;
@@ -225,7 +231,7 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 				_commondao.executeChange(sql, param);
 			}
 			//
-			em.pk_entity = null;// 确保一定能插入
+			em.id = null;// 确保一定能插入
 			_commondao.save(em, false, pk_entity_new);
 			for (FieldModel v : field_list) {
 				String pk_field = IdGenHelper.genID(em.code, v.code);

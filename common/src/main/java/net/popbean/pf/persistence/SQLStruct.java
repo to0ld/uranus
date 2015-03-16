@@ -55,9 +55,9 @@ public class SQLStruct {
 		List<Object> params = new ArrayList<Object>();
 		for (String key : this.cols) {
 			Object t = JOHelper.getObjectByIgnoreCase(vo, key);//依然有可能为空
-			if(t == null){
-				ErrorBuilder.createSys().msg("传入的数据中没有key="+key+"("+JSON.toJSONString(vo)+")").execute();//如果有必要就给出整个vo(toJsonString)
-			}
+//			if(t == null){
+//				ErrorBuilder.createSys().msg("传入的数据中没有key="+key+"("+JSON.toJSONString(vo)+")").execute();//如果有必要就给出整个vo(toJsonString)
+//			}
 			params.add(t);
 		}
 		this.values = params;

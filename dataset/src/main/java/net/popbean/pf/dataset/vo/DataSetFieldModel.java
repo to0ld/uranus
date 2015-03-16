@@ -13,9 +13,7 @@ public class DataSetFieldModel extends AbstractValueObject {
 	private static final long serialVersionUID = -2754985279324149578L;
 	//
 	@Field(domain=Domain.Ref)
-	public String ds_id;
-	@Field(domain=Domain.PK)
-	public String ds_field_id;
+	public String ds_ref;
 	@Field(domain=Domain.Int)
 	public Integer inum;//显示顺序
 	@Field

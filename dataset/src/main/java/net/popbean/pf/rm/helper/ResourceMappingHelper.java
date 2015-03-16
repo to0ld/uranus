@@ -21,15 +21,17 @@ public class ResourceMappingHelper {
 		tm.name = "资源授权表(" + rlt_md_code + ")";
 		//
 		List<FieldModel> field_list = new ArrayList<>();
-		FieldModel pk_field = FieldHelper.pk("pk_rlt_rm", "主键");
-		FieldModel ref_subject = FieldHelper.ref("ref_subject","主体参照");
-		FieldModel ref_resource = FieldHelper.ref("ref_resource","资源参照");
-		FieldModel i_stat = FieldHelper.stat("i_stat","状态");
+		FieldModel id = FieldHelper.pk("id", "主键");
+		FieldModel subject_ref = FieldHelper.ref("subject_ref","主体参照");
+		FieldModel resource_ref = FieldHelper.ref("resource_ref","资源参照");
+		FieldModel status = FieldHelper.stat("status","状态");
+		FieldModel serial = FieldHelper.integer("serial","序号");
 		FieldModel memo = FieldHelper.memo("memo","备注");
-		field_list.add(pk_field);
-		field_list.add(ref_subject);
-		field_list.add(ref_resource);
-		field_list.add(i_stat);
+		field_list.add(id);
+		field_list.add(subject_ref);
+		field_list.add(resource_ref);
+		field_list.add(status);
+		field_list.add(serial);
 		field_list.add(memo);
 		//
 		tm.field_list = field_list;

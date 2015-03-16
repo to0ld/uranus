@@ -1,0 +1,10 @@
+{
+	"data":{
+		"code":"spring_role_test",
+		"name":"角色列表(测试)",
+		"app_code":"testcase",
+		"src_type":"Spring",
+		"exec_exp":"service/pf/dataset/spring_role_test",
+		"exec_exp1":"select * from pb_bd_role where 1=1 "
+	}
+}

@@ -167,7 +167,7 @@ public class EntityModelHelper {
 	 * @throws Exception
 	 */
 	public static List<FieldModel> parseFieldModelList(Class<?> clazz)throws Exception{
-		Field[] f_list = clazz.getDeclaredFields();
+		Field[] f_list = clazz.getFields();
 		List<FieldModel> ret = new ArrayList<>();
 		for(Field f:f_list){
 			FieldModel model = buildFieldModel(f);
@@ -262,6 +262,7 @@ public class EntityModelHelper {
 		model.type = a.domain();
 		model.name = a.name();
 		model.clazz = f.getType().getName();
+		model.length = a.domain().getLength();
 		//
 		if(Domain.Ref.equals(model.type)){//如果是ref类型，还得继续找
 			if(!IValueObject.class.equals(a.relation())){

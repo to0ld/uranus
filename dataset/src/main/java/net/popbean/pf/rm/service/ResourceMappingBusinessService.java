@@ -91,6 +91,14 @@ public interface ResourceMappingBusinessService {
 	List<JSONObject> fetchSubjectList(String rm_unique, JSONObject param, Paging paging, SecuritySession client) throws BusinessError;
 
 	void grant(String rm_code, String pk_subject, List<String> pk_resource_list, SecuritySession client) throws BusinessError;
+	/**
+	 * 判断pk_subject是否有pk_resource的权限
+	 * @param rm_code
+	 * @param pk_subject
+	 * @param pk_resource
+	 * @throws BusinessError
+	 */
+	public boolean valid(String rm_code,String pk_subject,String pk_resource,SecuritySession session)throws BusinessError;
 
 	void remove(String rm_code, String pk_subject, List<String> pk_resource_list, SecuritySession client) throws BusinessError;
 }

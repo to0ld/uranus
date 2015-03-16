@@ -16,6 +16,7 @@ import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
+import net.popbean.pf.entity.model.helper.EntityModelHelper;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.persistence.helper.DaoConst.Paging;
@@ -53,7 +54,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			//FIXME 暂时不考虑istat=0，封存的情况
 			//需要识别一下是排除还是咋
 			String rlt_md_code = rm_inst.relation_code;
-			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where ref_subject=${ref_subject} ");
+			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_ref=${ref_subject} ");
 			List<JSONObject> rlt_list = _commondao.query(sql, JO.gen("PK_SUBJECT",pk_subject));//得到授权数据
 			String pk_resource_code = rm_inst.resource_ref;//受控资源主键
 			DataSetModel ds_inst = dsService.findModel(pk_resource_code, new JSONObject(), true,true,null,client);
@@ -85,7 +86,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			//FIXME 暂时不考虑istat=0，封存的情况
 			//需要识别一下是排除还是咋
 			String rlt_md_code = rm_inst.relation_code;
-			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where ref_subject=${ref_subject} ");
+			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_ref=${ref_subject} ");
 			List<JSONObject> rlt_list = _commondao.query(sql, JO.gen("PK_SUBJECT",pk_subject));//得到授权数据
 			String pk_resource_code = rm_inst.resource_ref;//受控资源主键
 			DataSetModel ds_model = dsService.findModel(pk_resource_code, param, true,true,null,client);
@@ -162,7 +163,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			//根据rm_unique得到rm_inst
 			StringBuilder sql = new StringBuilder(" select a.* ");
 			sql.append(" from pb_pf_rm a ");
-			sql.append(" where 1=1 and (a.rm_code=${RM_UNIQUE} or a.pk_rm=${RM_UNIQUE}) ");
+			sql.append(" where 1=1 and (a.code=${RM_UNIQUE} or a.id=${RM_UNIQUE}) ");
 			ResourceMappingModel rm_inst = _commondao.find(sql, JO.gen("RM_UNIQUE",rm_unique),ResourceMappingModel.class,null);
 			if(rm_inst == null){//没有找到配套的rm，就原路返回
 				return list;
@@ -218,7 +219,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 	public List<JSONObject> fetchSubjectList(String rm_unique,JSONObject param,Paging paging,SecuritySession client)throws BusinessError{
 		try {
 			//得到主体的编码
-			StringBuilder sql = new StringBuilder("select a.* from pb_pf_rm where 1=1 and (code_rm=${RM_UNIQUE} or pk_rm=${RM_UNIQUE}) ");
+			StringBuilder sql = new StringBuilder("select a.* from pb_pf_rm where 1=1 and (code=${RM_UNIQUE} or id=${RM_UNIQUE}) ");
 			JSONObject rm_inst = _commondao.find(sql, JO.gen("RM_UNIQUE",rm_unique),"没有找到rm_unique="+rm_unique+"的数据");
 			//得到值域
 			String pk_subject_code = rm_inst.getString("PK_SUBJECT_CODE");
@@ -240,7 +241,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 		try {
 			//FIXMME 先查询得到配置
 			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_rm a ");
-			sql.append(" where 1=1 and (a.code_rm=${RM_UNIQUE} or a.pk_rm=${RM_UNIQUE}) ");
+			sql.append(" where 1=1 and (a.code=${RM_UNIQUE} or a.id=${RM_UNIQUE}) ");
 			ResourceMappingModel rm_inst = _commondao.find(sql, JO.gen("RM_UNIQUE",rm_unique),ResourceMappingModel.class,"指定的映射配置，rm_unique="+rm_unique+"没有找到");
 			//FIXME 暂时不考虑istat=0，封存的情况
 			//需要识别一下是排除还是咋
@@ -312,7 +313,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 		try {
 			JSONObject param = JO.gen("code_rm",rm_code);
 			
-			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_rm a where code_rm=${code_rm} ");
+			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_rm a where code=${code_rm} ");
 			ResourceMappingModel rm_inst = _commondao.find(sql, param, ResourceMappingModel.class, "没有找到rm_code="+rm_code+"的资源映射配置");
 			
 			String pk_subject = VOHelper.getPKFromRef(rm_inst.subject_ref);//假定这个是组合pk_ds@#@ds_name
@@ -331,8 +332,8 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 	}
 	private ResourceMappingModel findBaseInfo(String rm_unique)throws BusinessError{
 		try {
-			StringBuilder sql = new StringBuilder(" select a.code_relation,a.ref_resource from pb_pf_rm a where a.code_rm=${code_rm} ");
-			ResourceMappingModel rm_inst = _commondao.find(sql, JO.gen("code_rm",rm_unique),ResourceMappingModel.class,"没有找到rm_code="+rm_unique+"的资源映射");
+			StringBuilder sql = new StringBuilder(" select a.relation_code,a.resource_ref from pb_pf_rm a where a.code=${code} ");
+			ResourceMappingModel rm_inst = _commondao.find(sql, JO.gen("code",rm_unique),ResourceMappingModel.class,"没有找到rm_code="+rm_unique+"的资源映射");
 			return rm_inst;
 		} catch (Exception e) {
 			processError(e);
@@ -353,14 +354,14 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			ResourceMappingModel rm_inst = findBaseInfo(rm_code);
 			String rlt_md_code = rm_inst.relation_code;
 			//清除一下已有的关系
-			StringBuilder sql = new StringBuilder("select pk_subject,pk_resource from "+rlt_md_code+" where pk_subject=${PK_SUBJECT} and pk_resource ");
-			sql.append(DaoHelper.Sql.in("PK_RESOURCE", pk_resource_list.size()));
-			JSONObject p = DaoHelper.Sql.in(JO.gen(), pk_resource_list, "PK_RESOURCE");
+			StringBuilder sql = new StringBuilder("select subject_ref,resource_ref from "+rlt_md_code+" where subject_ref like ${subject_ref} and resource_ref ");
+			sql.append(DaoHelper.Sql.in("resource_ref", pk_resource_list.size()));
+			JSONObject p = DaoHelper.Sql.in(JO.gen("subject_ref",pk_subject), pk_resource_list, "resource_ref");
 			List<JSONObject> sub_list = _commondao.query(sql, p);
 			//
 			Map<String,String> bus = new HashMap<>();
 			for(JSONObject sub:sub_list){
-				sub.put(sub.getString("PK_RESOURCE"), sub.getString("PK_RESOURCE"));
+				sub.put(sub.getString("pk_resource"), sub.getString("pk_resource"));
 			}
 			//
 			//
@@ -368,15 +369,17 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			for(String v:pk_resource_list){
 				JSONObject vo = new JSONObject();
 				if(!bus.containsKey(v)){//已经存在的，就不改了
-					vo.put("PK_SUBJECT",pk_subject);
-					vo.put("PK_RESOURCE",v);//其实为空也是不行的
+					vo.put("subject_ref",pk_subject);
+					vo.put("resource_ref",v);//其实为空也是不行的
+					vo.put("status",3);
+					vo.put("serial", 0);
 					data.add(vo);					
 				}
 			}
-			EntityModel tm = ResourceMappingHelper.buildRelationEntityModel(rlt_md_code);
-			FieldModel pk_resource = FieldHelper.ref("ref_resource","资源主键");
-			FieldModel pk_subject_field = FieldHelper.ref("ref_subject","主体主键");
-			_commondao.batchInsertJO(tm, data,new FieldModel[]{pk_subject_field,pk_resource});//要想省事，可以用replace，pk_subject:pk_resource
+			EntityModel model = ResourceMappingHelper.buildRelationEntityModel(rlt_md_code);
+			FieldModel pk_resource = FieldHelper.ref("resource_ref","资源主键");
+			FieldModel pk_subject_field = FieldHelper.ref("subject_ref","主体主键");
+			_commondao.batchInsertJO(model, data,new FieldModel[]{pk_subject_field,pk_resource});//要想省事，可以用replace，pk_subject:pk_resource
 		} catch (Exception e) {
 			processError(e);
 		}
@@ -542,5 +545,23 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			msg.append(", ");
 		}
 		return msg.substring(0, msg.length() - 2);
+	}
+	/**
+	 * 
+	 */
+	@Override
+	public boolean valid(String rm_code, String subject_ref, String resource_ref,SecuritySession session) throws BusinessError {
+		try {
+			//1-得到model
+			ResourceMappingModel model = findModel(rm_code, session);
+			String relation = model.relation_code;
+			StringBuilder sql = new StringBuilder("select id from "+relation+" where subject_ref=${subject_ref} and resource_ref=${resource_ref}");
+			JSONObject inst = _commondao.find(sql, JO.gen("subject_ref",subject_ref,"resource_ref",resource_ref));
+			//2-根据rlt拼写sql查询
+			return (inst != null);
+		} catch (Exception e) {
+			processError(e);
+		}
+		return false;
 	}
 }

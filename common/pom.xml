@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>common</artifactId>
 	<properties>
-		<java-version>1.7</java-version>
+		<java-version>1.8</java-version>
 		<springframework.version>4.1.4.RELEASE</springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<skipTests>true</skipTests>
@@ -108,11 +108,19 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 			<version>3.1</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>5.0.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>reflectasm</artifactId>
+			<version>1.10.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -128,6 +136,7 @@
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson</artifactId>
 			<version>1.2.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
@@ -204,12 +213,5 @@
 			<name>osc-thirdparty</name>
 			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
 		</repository>
-		<!-- 
-		<snapshotRepository>
-			<id>osc-3rdPartySnapshot</id>
-			<name>3rdPartySnapshot</name>
-			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
-		</snapshotRepository>
-		 -->
 	</distributionManagement>
 </project>

@@ -42,9 +42,20 @@ public class AccountVO implements IValueObject{
 	
 	@Field(name = "用户信息备注",domain=Domain.Memo)
 	public String memo_account;
+	@Field(domain=Domain.Stat)
+	public Domain domain;
+	@Field
+	public String domainx;
 	//
 	public void setName(String value){
 		this.code_account = value;
+		return ;
+	}
+	public Domain getDomain(){
+		return this.domain;
+	}
+	public void setDomain(Domain value){
+		this.domain = value;
 		return ;
 	}
 	public String getName(){

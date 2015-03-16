@@ -29,7 +29,7 @@ public class EntityModel implements Serializable, Cloneable,IValueObject {
 	public String code;//FIXME 对于分表的情况而言，还是要处理一下的(暂时不支持分表的情况吧)
 	@Field(domain=Domain.Code)
 	public String name;
-	@Field(domain=Domain.Memo)
+	@Field(domain=Domain.Memo,required=false)
 	public String memo;
 	public EntityType type = EntityType.Normal;
 	//

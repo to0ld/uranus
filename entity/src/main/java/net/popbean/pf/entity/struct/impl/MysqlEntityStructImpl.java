@@ -21,6 +21,9 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			}
 			ret += convertField(field) + "\n";
 			pos++;
+			if(Domain.Ref.equals(field.type)){
+				
+			}
 		}
 		// 处理主键
 		FieldModel pk = model.findPK();
@@ -64,7 +67,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.PK.equals(field.type)) {
@@ -73,7 +76,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		}else if(Domain.Ref.equals(field.type)){
@@ -81,12 +84,12 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.Date.equals(field.type)) {
 			ret += " date ";
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.Money.equals(field.type)) {
@@ -95,7 +98,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.Stat.equals(field.type)) {
@@ -103,12 +106,12 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.TimeStamp.equals(field.type)) {
 			ret += " TIMESTAMP ";
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}else{
 				ret += "  null ";
@@ -126,7 +129,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (!StringUtils.isBlank(field.defaultValue)) {
 				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
 			}
-			if (field.required) {
+			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		}

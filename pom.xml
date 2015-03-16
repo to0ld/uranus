@@ -22,14 +22,11 @@
 		<module>common</module> 
 		<module>entity</module>
 		<module>cache</module>
-		<module>security</module>
-		<!--
-		<module>rule</module>
-		
 		<module>dataset</module>
-		
-		 -->
-		 <module>mvc</module>
+		<module>security</module>
+		<module>rule</module>
+		<module>mvc</module>
+		<module>bpmn</module>
 	</modules>
 	<build>
 		<pluginManagement>

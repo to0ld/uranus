@@ -4,13 +4,13 @@ import org.objectweb.asm.util.ASMifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import testcase.vo.AccountVO1Wrapper;
+import testcase.vo.AccountVOWrapperTpl;
 
 public class GenClassTestCase {
 	@Test
 	public void printClass(){
 		try {
-			ASMifier.main(new String[]{AccountVO1Wrapper.class.getName()}); 
+			ASMifier.main(new String[]{AccountVOWrapperTpl.class.getName()}); 
 		} catch (Exception e) {
 			Assert.fail("asmifier", e);
 		}

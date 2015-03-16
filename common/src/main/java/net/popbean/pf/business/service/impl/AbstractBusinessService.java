@@ -1,11 +1,13 @@
 package net.popbean.pf.business.service.impl;
 
 import net.popbean.pf.entity.IValueObject;
+import net.popbean.pf.entity.helper.JO;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.lock.LockService;
 import net.popbean.pf.log.op.service.OpLogService;
 import net.popbean.pf.persistence.impl.CommonDao;
+import net.popbean.pf.security.vo.SecuritySession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public abstract class AbstractBusinessService {
 	protected LockService lockService;
 	//
 	@Autowired(required=true)
-	@Qualifier("service/pf/log/op")
+	@Qualifier("service/pf/log/op/redis")
 	protected OpLogService oplogService;
 	//
 	protected static Logger log = Logger.getLogger("SERVICE");
@@ -59,5 +61,8 @@ public abstract class AbstractBusinessService {
 	 */
 	public void processError(String msg,Throwable t)throws BusinessError{
 		ErrorBuilder.createBusiness().cause(t).msg(msg).execute();
+	}
+	public void log(String op_cate,String msg,SecuritySession session)throws BusinessError{
+		oplogService.log(op_cate, JO.gen("msg",msg), session);
 	}
 }

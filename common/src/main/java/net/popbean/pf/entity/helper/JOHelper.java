@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.popbean.pf.entity.IValueObject;
-import net.popbean.pf.entity.IValueObjectWrapper;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
 import net.popbean.pf.entity.model.helper.EntityModelHelper;
@@ -222,12 +221,10 @@ public class JOHelper {
 			return null;
 		}
 		EntityModel model = EntityModelHelper.build(vo);
-		IValueObjectWrapper wrapper = EntityWrapperHelper.wrapper(vo.getClass());
-
 		JSONObject ret = new JSONObject();
 		for(FieldModel f:model.field_list){
 			String key = f.code;
-			ret.put(key, wrapper.get(vo, key));
+			ret.put(key, VOHelper.get(vo, key));
 		}
 		return ret;
 	}
@@ -278,6 +275,17 @@ public class JOHelper {
 		List<JSONObject> ret = new ArrayList<>();
 		for(int i=0,len=ja.size();i<len;i++){
 			ret.add(ja.getJSONObject(i));
+		}
+		return ret;
+	}
+	@SuppressWarnings("unchecked")
+	public static  <T> List<T> leach(List<JSONObject> array,String key,boolean keepNull){
+		List<T> ret = new ArrayList<>();
+		for(int i=0,len=array.size();i<len;i++){
+			T t = (T)array.get(i).get(key);
+			if(keepNull || t!=null){
+				ret.add(t);
+			}			
 		}
 		return ret;
 	}

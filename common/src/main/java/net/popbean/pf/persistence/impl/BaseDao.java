@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.popbean.pf.entity.IValueObject;
-import net.popbean.pf.entity.IValueObjectWrapper;
 import net.popbean.pf.entity.field.Domain;
-import net.popbean.pf.entity.helper.EntityWrapperHelper;
 import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.entity.model.EntityModel;
@@ -26,8 +24,8 @@ import net.popbean.pf.id.service.IDGenService;
 import net.popbean.pf.log.prof.helper.ProfLogHelper;
 import net.popbean.pf.persistence.IDataAccessObject;
 import net.popbean.pf.persistence.SQLStruct;
-import net.popbean.pf.persistence.helper.DaoHelper;
 import net.popbean.pf.persistence.helper.DaoConst.Paging;
+import net.popbean.pf.persistence.helper.DaoHelper;
 import net.popbean.pf.persistence.helper.DaoHelper.DbType;
 import net.popbean.pf.persistence.service.IDBConnectionProviderService;
 
@@ -99,6 +97,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		//FIXME 
 //		EntityModel model = entityService.findModel(vo);//FIXME 采用findModel(String code)初期只需要代码里写好就行
 		EntityModel model = EntityModelHelper.build(vo);
+		//FIXME 应该由model+vo来决定最终的sql 语句
 		JSONObject jo = JOHelper.vo2jo(vo);
 		if (forceValidate) {
 			VOHelper.validate(model, vo);
@@ -121,7 +120,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 				}
 				jo.put(pkField.code,pk);
 			}
-			sql.append(DaoHelper.Sql.insert(model, null));
+			sql.append(DaoHelper.Sql.insert(model, jo,null));
 		}
 		jo = fixNumber(model.field_list, jo);//FIXME 应该引申为补齐默认值为宜
 		executeChange(sql, jo);
@@ -152,18 +151,17 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		return jo;
 	}
 	protected <T extends IValueObject> T fixNumber(List<FieldModel> f_list, T vo) throws Exception {
-		IValueObjectWrapper<T> wrapper = (IValueObjectWrapper<T>)EntityWrapperHelper.wrapper(vo.getClass());
 		for (int i = 0, len = f_list.size(); i < len; i++) {
 			FieldModel model = f_list.get(i);
 			if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Money) || model.type.equals(Domain.Int)){
-				Object value = wrapper.get(vo, model.code);
+				Object value = VOHelper.get(vo, model.code);
 				if(value == null || StringUtils.isBlank(value.toString())){
 					if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Int)){
-						wrapper.set(vo,model.code,TypeUtils.castToInt(model.defaultValue));// 确保填补默认值
+						VOHelper.set(vo,model.code,TypeUtils.castToInt(model.defaultValue));// 确保填补默认值
 					}else if(model.type.equals(Domain.Money)){
-						wrapper.set(vo,model.code,TypeUtils.castToBigDecimal(model.defaultValue));// 确保填补默认值
+						VOHelper.set(vo,model.code,TypeUtils.castToBigDecimal(model.defaultValue));// 确保填补默认值
 					}else{
-						wrapper.set(vo,model.code,model.defaultValue);
+						VOHelper.set(vo,model.code,model.defaultValue);
 					}
 				}
 			}
@@ -307,9 +305,8 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	public <T extends IValueObject> T find(T vo, String tech_msg) throws Exception {
 		EntityModel model = EntityModelHelper.build(vo);
 		FieldModel pk_field = model.findPK();
-		IValueObjectWrapper wrapper = EntityWrapperHelper.wrapper(vo.getClass());
 		JSONObject param = new JSONObject();
-		param.put(pk_field.code, wrapper.get(vo, pk_field.code));
+		param.put(pk_field.code, VOHelper.get(vo, pk_field.code));
 		//
 		StringBuilder sql = new StringBuilder(DaoHelper.Sql.select(model));
 		sql.append(" from ").append(model.code);
@@ -319,7 +316,6 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	public <T extends IValueObject> T find(StringBuilder sql, JSONObject param,Class<T> clazz,String tech_msg) throws Exception {
 		EntityModel model = EntityModelHelper.build(clazz);
 		FieldModel pk_field = model.findPK();
-		IValueObjectWrapper wrapper = EntityWrapperHelper.wrapper(clazz);
 		//
 		//FIXME 就查询条件而言，得支持
 		StringBuilder sql_final = new StringBuilder(sql);// 复制一份出来
@@ -481,7 +477,6 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		}
 		Class<T> clazz = (Class<T>)list.get(0).getClass();
 		EntityModel model = EntityModelHelper.build(clazz);
-		IValueObjectWrapper<T> wrapper = EntityWrapperHelper.wrapper(clazz);
 		List<FieldModel> f_list = model.field_list;
 		V pk = null;
 		FieldModel pkField = model.findPK();
@@ -489,7 +484,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 			for (int i = 0, len = list.size(); i < len; i++) {
 				if (!VOHelper.has(pkField, list.get(i))) {// 如果已经在外部注入了。。。那就省事了
 					pk = genId();
-					wrapper.set(list.get(i), pkField.code, pk);
+					VOHelper.set(list.get(i), pkField.code, pk);
 				}
 				list.set(i, fixNumber(f_list, list.get(i)));
 			}
@@ -533,12 +528,11 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		List<FieldModel> f_list = tm.field_list;
 		V pk = null;
 		FieldModel pkField = tm.findPK();
-		IValueObjectWrapper<T> wrapper = (IValueObjectWrapper<T>) EntityWrapperHelper.wrapper(list.get(0).getClass());
 		if (pkField != null) {
 			for (int i = 0, len = list.size(); i < len; i++) {
 				if (!VOHelper.has(pkField, list.get(i))) {// 如果已经在外部注入了。。。那就省事了
 					pk = genId();
-					wrapper.set(list.get(i), pkField.code, pk);
+					VOHelper.set(list.get(i), pkField.code, pk);
 				}
 				list.set(i, fixNumber(f_list, list.get(i)));
 			}
@@ -586,8 +580,8 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	@Override
 	public boolean assertTrue(StringBuilder sql, JSONObject vo, String buz_msg) throws Exception {
 		Connection conn = getConn();
-		boolean flag = processCheckUnique(conn, sql, vo);
-		if (!flag && !StringUtils.isBlank(buz_msg)) {
+		boolean flag = processAssertTrue(conn, sql, vo);
+		if (flag && !StringUtils.isBlank(buz_msg)) {
 			ErrorBuilder.createBusiness().msg(buz_msg).execute();
 		}
 		return flag;
@@ -720,7 +714,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	 * 
 	 * @return true(无符合sql条件的数据);false(有符合条件的数据)
 	 * **/
-	private boolean processCheckUnique(Connection conn, StringBuilder sql, JSONObject vo) throws Exception {
+	private boolean processAssertTrue(Connection conn, StringBuilder sql, JSONObject vo) throws Exception {
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		SQLStruct struct = null;
@@ -731,7 +725,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 			stmt = makeStmt(conn, struct, vo);
 			rs = stmt.executeQuery();
 			ProfLogHelper.debug(DaoHelper.parseMsg(struct));
-			return !rs.next();
+			return rs.next();
 		} catch (Exception e) {
 			// 参考spring jdbc template的写法，尽快释放连接，据说能避免connection pool的死锁
 			after(rs, stmt, conn);

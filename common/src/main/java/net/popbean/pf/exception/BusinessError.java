@@ -26,6 +26,10 @@ public class BusinessError extends RemoteException {
 		super();
 		_cate = cate;
 	}
+	public BusinessError(String msg,ErrorCate cate){
+		super(msg);
+		_cate = cate;
+	}
 	public BusinessError(ErrorCate cate,Throwable cause){
 		super(cause.getMessage(),cause);
 		_cate = cate;

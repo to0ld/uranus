@@ -30,10 +30,10 @@ public interface CommonBusinessService {
 
 	/**
 	 * 
-	 * @param sql_list
-	 * @param param_list
-	 * @param client
-	 * @return
+	 * @param sql_list 需要执行的sql list
+	 * @param param_list 与sql_list匹配对应的参数列表
+	 * @param client 当前登陆者信息
+	 * @return 将每个sql执行的结果作为一个key压制到一个json object中返回
 	 * @throws BusinessError
 	 */
 	public JSONObject query(List<StringBuilder> sql_list, List<JSONObject> param_list, SecuritySession client) throws BusinessError;

@@ -17,7 +17,12 @@ import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.log.helper.LogConst;
 import net.popbean.pf.log.op.service.OpLogService;
 import net.popbean.pf.security.vo.SecuritySession;
-@Service("service/pf/log/op")
+/**
+ * 应该尽量少用mongo，用redis替代了
+ * @author to0ld
+ *
+ */
+@Service("service/pf/log/op/mongo")
 public class OpLogServiceMongoImpl implements OpLogService {
 	//
 	@Autowired

@@ -13,13 +13,13 @@ public class NodeVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 1799800618183581104L;
-	public String pk_node;
-	public String code_node;
-	public String name_node;
+	public String id;
+	public String code;
+	public String name;
 	public String code_type;//节点类型
-	public String code_bill;//单据编码
-	public String code_app;//应用标示
-	public String memo_node;//备注
-	public String memo_script;//控制机脚本
-	public String code_ctrl;//控制脚本链接
+	public String bill_code;//单据编码
+	public String app_code;//应用标示
+	public String memo;//备注
+	public String ctrl_content;//控制脚本
+	public String ctrl_uri;//控制脚本链接
 }

@@ -229,8 +229,8 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 			_commondao.save(em, false, pk_entity_new);
 			for (FieldModel v : field_list) {
 				String pk_field = IdGenHelper.genID(em.code, v.code);
-				v.pk_field = pk_field;
-				v.pk_entity = pk_entity_new;
+				v.field_id = pk_field;
+				v.entity_ref = pk_entity_new;
 			}
 			_commondao.batchReplace(field_list);
 			return pk_entity_new;

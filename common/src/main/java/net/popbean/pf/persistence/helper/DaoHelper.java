@@ -8,7 +8,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Struct;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -21,10 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.popbean.pf.entity.IValueObject;
-import net.popbean.pf.entity.IValueObjectWrapper;
 import net.popbean.pf.entity.field.Domain;
-import net.popbean.pf.entity.helper.EntityWrapperHelper;
 import net.popbean.pf.entity.helper.JOHelper;
+import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
 import net.popbean.pf.entity.model.helper.EntityModelHelper;
@@ -113,7 +111,6 @@ public class DaoHelper {
 		}
 		public static <T extends IValueObject> T fetchVOFromResultSet(Class<T> clazz, ResultSet rs) throws Exception {
 			T ret = clazz.newInstance();
-			IValueObjectWrapper<T> wrapper = EntityWrapperHelper.wrapper(clazz);
 			// 1-get rsmetadata
 			ResultSetMetaData meta = rs.getMetaData();
 			// 2-get map<String,Object>
@@ -124,26 +121,26 @@ public class DaoHelper {
 				if (col_type == Types.TIMESTAMP) {
 					String cn = meta.getColumnTypeName(i).toLowerCase();
 					if (cn.indexOf("TIMESTAMP") != -1 || cn.indexOf("DATETIME") != -1) {// oracle 11g的驱动会将date,timestamp都视为93 
-						wrapper.set(ret, col_name, rs.getTimestamp(i));//FIXME 有大小写的问题
+						VOHelper.set(ret, col_name, rs.getTimestamp(i));//FIXME 有大小写的问题
 					} else {
 						Date dt = rs.getDate(i);
 						if (dt != null) {
 							long l = dt.getTime();
-							wrapper.set(ret,col_name,new Date(l));
+							VOHelper.set(ret,col_name,new Date(l));
 						}
 					}
 				} else if (col_type == Types.DATE) {
-					wrapper.set(ret,col_name,rs.getDate(i));
+					VOHelper.set(ret,col_name,rs.getDate(i));
 				} else if (col_type == Types.BOOLEAN) {
-					wrapper.set(ret,col_name,rs.getBoolean(i));
+					VOHelper.set(ret,col_name,rs.getBoolean(i));
 				} else if(col_type == Types.LONGVARBINARY){
 					byte[] bytes = (byte[])rs.getObject(i);
 //					vo.set(col_name,new String(bytes, "UTF-8"));
 					if(bytes!=null){
-						wrapper.set(ret,col_name,new String(bytes));
+						VOHelper.set(ret,col_name,new String(bytes));
 					}
 				}else {
-					wrapper.set(ret,col_name,rs.getObject(i));
+					VOHelper.set(ret,col_name,rs.getObject(i));
 				}
 			}
 			return ret;
@@ -255,7 +252,7 @@ public class DaoHelper {
 			}
 			return pref + suffix + " ) ";
 		}
-		public static String insert(EntityModel model) throws Exception {
+		public static String insert(EntityModel model,JSONObject jo) throws Exception {
 			StringBuilder suffix = new StringBuilder(") values(");
 			StringBuilder pref = new StringBuilder(" insert into " + model.code + "(");
 //			List<String> list = new ArrayList<String>();
@@ -263,24 +260,51 @@ public class DaoHelper {
 			List<FieldModel> field_list =model.field_list;
 			Set<String> bus = new HashSet<>();
 			for (FieldModel field : field_list) {
-				List<String> tmp = new ArrayList<>();
-				tmp.add(field.code.toUpperCase());
-				for(String key:tmp){
-					if(!bus.contains(key)){
-						if (pos != 0) {
-							pref.append(",");
-							suffix.append(",");
-						}
-						pref.append(key);
-						suffix.append("${" + key + "}");
-						bus.add(key);
-						pos++;
-					}
+				if(field.isRequired() && jo.get(field.code) == null){
+					ErrorBuilder.createSys().msg(field.code+"为必填项,但为空").execute();
 				}
+				if(jo.get(field.code)==null){
+					continue;
+				}
+				if(!bus.contains(field.code)){
+					if (pos != 0) {
+						pref.append(",");
+						suffix.append(",");
+					}
+					pref.append(field.code);
+					suffix.append("${" + field.code + "}");
+					bus.add(field.code);
+					pos++;
+				}
+
 			}
 			return pref.append(suffix).append(")").toString();
 		}
+		public static String insert(Class<? extends IValueObject> clazz) throws Exception{
+			EntityModel model = EntityModelHelper.build(clazz);
+			return insert(model);
+		}
+		public static String insert(EntityModel model) throws Exception {
+			StringBuilder suffix = new StringBuilder(") values(");
+			StringBuilder pref = new StringBuilder(" insert into " + model.code + "(");
+			int pos = 0;
+			List<FieldModel> field_list =model.field_list;
+			Set<String> bus = new HashSet<>();
+			for (FieldModel field : field_list) {
+				if(!bus.contains(field.code)){
+					if (pos != 0) {
+						pref.append(",");
+						suffix.append(",");
+					}
+					pref.append(field.code);
+					suffix.append("${" + field.code + "}");
+					bus.add(field.code);
+					pos++;
+				}
 
+			}
+			return pref.append(suffix).append(")").toString();
+		}
 		/**
 		 * 用于生成具有保护效果的sql
 		 * 
@@ -289,12 +313,52 @@ public class DaoHelper {
 		 * @return
 		 * @throws Exception
 		 */
-		public static String insert(Class<? extends IValueObject> clazz, FieldModel[] guardFields) throws Exception {
+		public static String insert(Class<? extends IValueObject> clazz, JSONObject jo,FieldModel[] guardFields) throws Exception {
 			EntityModel model = EntityModelHelper.build(clazz);
-			return insert(model, guardFields);
+			return insert(model, jo,guardFields);
+		} 
+		public static String insert(EntityModel tm,JSONObject jo,FieldModel[] guardFields)throws Exception{
+			if(ArrayUtils.isEmpty(guardFields)){
+				return insert(tm,jo);
+			}
+			// insert into table_code (...) select distinct ... from pb_pf_batch
+			// where not exists ()
+			// select 1 from table_code where guard_field
+			StringBuilder pref = new StringBuilder(" insert into " + tm.code + "(");
+			StringBuilder alter = new StringBuilder(" select distinct ");
+			//
+			int pos = 0;
+			List<FieldModel> field_list = tm.field_list;
+			Set<String> bus = new HashSet<>();
+			for (FieldModel field : field_list) {
+				if(!bus.contains(field.code)){//不重复
+					if(field.isRequired() && jo.get(field.code) == null){//如果是空值且属性约束不能为空那就别扯淡了
+						ErrorBuilder.createSys().msg(field.code+"是必填项，但没有赋值，无法进行后续处理").execute();
+					}
+					if(jo.get(field.code) != null){
+						if (pos != 0) {
+							pref.append(",");
+							alter.append(",");
+						}
+						pref.append(field.code);
+						alter.append("${").append(field.code).append("}");
+						bus.add(field.code);
+						pos++;
+					}
+					bus.add(field.code);//无论有无情况，都要如此处理
+				}
+			}
+			pref.append(")");
+			alter.append(" from pb_pf_batch where not exists(");
+			alter.append("select 1 from ").append(tm.code).append(" where 1=1 ");
+			for (FieldModel f : guardFields) {
+				alter.append(" and ").append(f.code).append("=${").append(f.code).append("} ");
+			}
+			alter.append(")");
+			//
+			return pref.append(alter).toString();
 		}
-
-		public static String insert(EntityModel tm, FieldModel[] guardFields) throws Exception {
+		public static String insert(EntityModel tm,FieldModel[] guardFields)throws Exception{
 			if(ArrayUtils.isEmpty(guardFields)){
 				return insert(tm);
 			}
@@ -308,19 +372,16 @@ public class DaoHelper {
 			List<FieldModel> field_list = tm.field_list;
 			Set<String> bus = new HashSet<>();
 			for (FieldModel field : field_list) {
-				List<String> tmp = new ArrayList<>();
-				tmp.add(field.code.toUpperCase());
-				for(String key:tmp){
-					if(!bus.contains(key)){
-						if (pos != 0) {
-							pref.append(",");
-							alter.append(",");
-						}
-						pref.append(key);
-						alter.append("${").append(key).append("}");
-						bus.add(key);
-						pos++;
+				if(!bus.contains(field.code)){//不重复
+					if (pos != 0) {
+						pref.append(",");
+						alter.append(",");
 					}
+					pref.append(field.code);
+					alter.append("${").append(field.code).append("}");
+					bus.add(field.code);
+					pos++;
+					bus.add(field.code);//无论有无情况，都要如此处理
 				}
 			}
 			pref.append(")");
@@ -333,7 +394,6 @@ public class DaoHelper {
 			//
 			return pref.append(alter).toString();
 		}
-
 		public static String select(EntityModel model) throws Exception {
 			return select(model.field_list);
 		}
@@ -436,8 +496,6 @@ public class DaoHelper {
 		 * @throws Exception
 		 */
 		public static String update(EntityModel model, IValueObject vo,boolean isNullClear) throws Exception {
-			IValueObjectWrapper wrapper = EntityWrapperHelper.wrapper(vo.getClass());
-			
 			StringBuilder sql = new StringBuilder(" update ");
 			sql.append(model.code).append(" set ");
 			FieldModel pk = model.findPK();
@@ -450,7 +508,7 @@ public class DaoHelper {
 				}
 				List<String> tmp = new ArrayList<>();
 				tmp.add(field.code.toUpperCase());
-				Object v = wrapper.get(vo, field.code);
+				Object v = VOHelper.get(vo, field.code);
 				if(v!=null){
 //				if (JOHelper.has(field, vo)) {// 有值
 					for(String k:tmp){
@@ -859,7 +917,9 @@ public class DaoHelper {
 				} else if (values.get(i) instanceof java.util.Date){
 				    java.util.Date dt = (java.util.Date)values.get(i);
                     stmt.setDate(i + pos, new Date(dt.getTime()));
-				} else {
+				} else if(values.get(i) instanceof Enum){//如果是枚举，那就转型吧
+					stmt.setObject(i + pos, values.get(i).toString());
+				}else {
 					stmt.setObject(i + pos, values.get(i));
 				}
 			}

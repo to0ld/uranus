@@ -23,8 +23,14 @@ public class OrgVO extends AbstractValueObject{
 	public String ref_company;
 	@Field(code="ref_account_owenr",name="组织负责人",domain=Domain.Ref)
 	public String ref_account_owner;
-	public String code_org;
-	public String name_org;
-	public String memo_org;
-	public Integer i_deep;//节点深度
+	@Field(name="组织编码")
+	public String code;
+	@Field(name="组织名称")
+	public String name;
+	@Field(domain=Domain.Memo,name="备注")
+	public String memo;
+	@Field(domain=Domain.Int,name="节点深度")
+	public Integer deep;//节点深度
+	@Field(domain=Domain.Seriescode,name="级次码")
+	public String seriescode;//[/a/b/c/结构，以便查询]
 }

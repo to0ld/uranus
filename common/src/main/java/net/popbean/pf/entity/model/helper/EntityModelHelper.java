@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
  *
  */
 public class EntityModelHelper {
+	public static String REF_SPLIT = "@#@";//pk@#@name
 	private static Map<String, EntityModel> _cache = new ConcurrentHashMap<>();
 	private static Map<String, List<EntityModel>> _relation_cache = new ConcurrentHashMap<>();
 	/**
@@ -239,7 +240,7 @@ public class EntityModelHelper {
 			throw new IllegalArgumentException("该字段["+key+"]为不可识别的数据类型["+type+"]");
 		}
 		boolean isReq = (rs.getInt("NULLABLE") == ResultSetMetaData.columnNoNulls);
-		field.required = isReq;
+		field.required = isReq?FieldModel.REQ_YES:FieldModel.REQ_NO;
 		return field;
 	}
 	/**
@@ -260,6 +261,7 @@ public class EntityModelHelper {
 		}
 		model.type = a.domain();
 		model.name = a.name();
+		model.clazz = f.getType().getName();
 		//
 		if(Domain.Ref.equals(model.type)){//如果是ref类型，还得继续找
 			if(!IValueObject.class.equals(a.relation())){
@@ -270,4 +272,5 @@ public class EntityModelHelper {
 		}
 		return model;
 	}
+
 }

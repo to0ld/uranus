@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 public class JO {
 	/**
 	 * 
-	 * @param args
+	 * @param args key-value 看起来必须是偶数，对吧
 	 * @return
 	 */
 	public static JSONObject gen(Object... args){

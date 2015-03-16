@@ -18,7 +18,7 @@ public @interface Field {
 
 	String name() default "";
 
-	Domain domain();
+	Domain domain() default Domain.Code;
 
 	int length() default 12;
 

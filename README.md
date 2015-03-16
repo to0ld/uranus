@@ -5,12 +5,16 @@
 ##feature
 
 - [] entity management(it.meta -> entity)
-    - entity model + field model
+    - [v] entity model + field model
     - relation model
     - entity data service
     - entity analysis service
     - relation service
 - [v] exception strategy
+	- 知识继承
+	- 关联信息
+	- [x] 自动创建工单
+	- [x] 集中采集
 - [v] pojo
 	- vo -> jo
 	- jo -> johelper
@@ -36,7 +40,7 @@
 - [?] log service
 - [v] rule service
 	- rule model需要增加是单一条件还是组合条件(一个条件被匹配上之后，继续执行)
-- [v] dataset service
+- [x] dataset service
 	- 需要加上安全策略
 	
 - bill service
@@ -45,11 +49,12 @@
 - schedule service(base on quartz)
 	- 优先级没那么高
 - bpmn service
-- [?] cache service
+- [v] cache service
 	- 提供cache管理的服务，用于主动失效等
 - [v] lock service
 - [v] code style
 	service:srv/{app}/{model}/{named}
+- [x|?] config service
 
 ## ask
 - [?] vo vs jsonobject(vo.vo这种情况好像出来的是linkedmap(从mongo中出来))
@@ -67,3 +72,4 @@
 	- [?] 解决存储的问题
 - [?] 针对复杂情况的mongo+jsonobject读取 
 - [?] sql processor中需要啥？sql执行时长？
+- [?] fe base on xx?

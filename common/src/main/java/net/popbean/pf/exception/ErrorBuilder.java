@@ -61,6 +61,7 @@ public class ErrorBuilder {
 		BusinessError error = null;
 		if(this.cause == null){
 			error = new BusinessError(this.cate);
+			
 		}else{
 			if(this.cause instanceof BusinessError){
 				error = (BusinessError)this.cause;

@@ -2,12 +2,14 @@ package net.popbean.pf.security.vo;
 
 import net.popbean.pf.entity.IValueObject;
 import net.popbean.pf.entity.field.Domain;
+import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
 /**
  * 多租户的企业信息
  * @author to0ld
  *
  */
+@Entity(code="pb_bd_company")
 public class CompanyVO implements IValueObject {
 
 	/**

@@ -1,5 +1,7 @@
 package testcase.asm.method;
 
+import java.io.FileOutputStream;
+
 import net.popbean.pf.entity.IValueObjectWrapper;
 import net.popbean.pf.entity.helper.EntityWrapperHelper;
 
@@ -8,6 +10,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import testcase.vo.AccountVO;
+import testcase.vo.AccountVOWrapperTpl;
 
 /**
  * 以accountvo为原型
@@ -40,10 +43,22 @@ public class EntityWrapperTestCase {
 			Assert.fail("usage", e);
 		}
 	}
-	@Test
+//	@Test
 	public void gen(){//得到wrapper的样本
 		try {
-			ASMifier.main(new String[]{AccountVO.class.getName()});
+//			ASMifier.main(new String[]{AccountVO.class.getName()});
+			ASMifier.main(new String[]{AccountVOWrapperTpl.class.getName()});
+		} catch (Exception e) {
+			Assert.fail("gen class", e);
+		}
+	}
+//	@Test
+	public void write(){
+		try {
+			byte[] bytes = EntityWrapperHelper.dump(AccountVO.class);
+			FileOutputStream fos = new FileOutputStream("AccountVOWrapperx.class");
+			fos.write(bytes);
+			fos.close();
 		} catch (Exception e) {
 			Assert.fail("gen class", e);
 		}

@@ -21,7 +21,17 @@
 		</dependency>
 		<dependency>
 			<groupId>net.popbean</groupId>
+			<artifactId>entity</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.popbean</groupId>
 			<artifactId>mvc</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.popbean</groupId>
+			<artifactId>dataset</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.popbean.pf.entity.IValueObject;
-import net.popbean.pf.entity.IValueObjectWrapper;
-import net.popbean.pf.entity.helper.EntityWrapperHelper;
 import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.exception.ErrorBuilder;
@@ -69,14 +67,13 @@ public class SQLStruct {
 		if(vo == null){//进行一下基本的保护
 			return this;
 		}
-		IValueObjectWrapper<T> wrapper = (IValueObjectWrapper<T>)EntityWrapperHelper.wrapper(vo.getClass());
 		List<Object> params = new ArrayList<Object>();
 		for (String key : this.cols) {
-			Object t = wrapper.get(vo, key);
+			Object t = VOHelper.get(vo, key);
 			if(t == null){
-				t = wrapper.get(vo, key.toUpperCase());
+				t = VOHelper.get(vo, key.toUpperCase());
 				if(t == null){
-					t = wrapper.get(vo, key.toLowerCase());
+					t = VOHelper.get(vo, key.toLowerCase());
 				}
 			}
 			params.add(t);

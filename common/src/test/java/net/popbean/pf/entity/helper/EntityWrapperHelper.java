@@ -36,7 +36,7 @@ public class EntityWrapperHelper implements Opcodes{
 	@SuppressWarnings(value={"unchecked","rawtypes"})
 	public static <T extends IValueObject> IValueObjectWrapper<T> wrapper(Class<T> clazz)throws Exception{
 		String key = clazz.getName();
-		IValueObjectWrapper<T> ret = _cache.get(key);
+		IValueObjectWrapper ret = _cache.get(key);
 		if(ret != null){
 			return ret;
 		}
@@ -207,7 +207,7 @@ public class EntityWrapperHelper implements Opcodes{
 	 * @param clazz 其实必须是有ivalue object的
 	 * @return
 	 */
-	private static <T extends IValueObject> byte[] dump(Class<T> clazz)throws Exception{
+	public static <T extends IValueObject> byte[] dump(Class<T> clazz)throws Exception{
 		EntityModel model = EntityModelHelper.build(clazz);
 		return dump(model);
 	}
@@ -220,8 +220,9 @@ public class EntityWrapperHelper implements Opcodes{
 	private static String getDomainClassVendor(FieldModel model){
 		if(model.type.equals(Domain.Code) || model.type.equals(Domain.Memo) || model.type.equals(Domain.PK) || model.type.equals(Domain.Seriescode)){
 			return "java/lang/String";
-		}else if(model.type.equals(Domain.Stat)){
-			return "java/lang/Integer";
+		}else if(model.type.equals(Domain.Stat)){//支持stat field有两种pojo field类
+			return model.clazz.replaceAll("\\.", "/");
+//			return "java/lang/Integer";
 		}else if(model.type.equals(Domain.Money)){
 			return "java/math/BigDecimal";
 		}else if(model.type.equals(Domain.Date)){

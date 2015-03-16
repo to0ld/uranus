@@ -13,6 +13,7 @@ import net.popbean.pf.dataset.vo.DataSetModel;
 import net.popbean.pf.dataset.vo.Scope;
 import net.popbean.pf.dataset.vo.SourceType;
 import net.popbean.pf.entity.helper.JOHelper;
+import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.helper.HttpHelper;
@@ -64,10 +65,10 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 			//
 			JSONObject p = new JSONObject();
 			p.put("ds_unique",ds_unique);
-			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_ds a where (ds_id=${ds_unique} or ds_code=${ds_unique}) ");
+			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_ds a where (id=${ds_unique} or code=${ds_unique}) ");
 			DataSetModel inst = _commondao.find(sql, p, DataSetModel.class, "没有找到指定的数据集ds_unique="+ds_unique);
-			p.put("pk_ds", inst.id);
-			sql = new StringBuilder(" select a.* from pb_pf_ds_field a where a.ds_id=${pk_ds} order by inum");
+			p.put("pk_ds", VOHelper.buildRef(inst.id, inst.name));
+			sql = new StringBuilder(" select a.* from pb_pf_ds_field a where a.ds_ref=${pk_ds} order by inum");
 			List<DataSetFieldModel> list = _commondao.query(sql, p, DataSetFieldModel.class);
 			if(CollectionUtils.isEmpty(list)){//支持全盘接收的模式，省事
 //				throw new BuzException("该数据集不完整，无法使用，请与运维人员联系");

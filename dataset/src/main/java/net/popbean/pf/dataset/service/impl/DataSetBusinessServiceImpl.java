@@ -66,7 +66,7 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 			p.put("ds_unique",ds_unique);
 			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_ds a where (ds_id=${ds_unique} or ds_code=${ds_unique}) ");
 			DataSetModel inst = _commondao.find(sql, p, DataSetModel.class, "没有找到指定的数据集ds_unique="+ds_unique);
-			p.put("pk_ds", inst.ds_id);
+			p.put("pk_ds", inst.id);
 			sql = new StringBuilder(" select a.* from pb_pf_ds_field a where a.ds_id=${pk_ds} order by inum");
 			List<DataSetFieldModel> list = _commondao.query(sql, p, DataSetFieldModel.class);
 			if(CollectionUtils.isEmpty(list)){//支持全盘接收的模式，省事

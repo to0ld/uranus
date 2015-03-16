@@ -120,7 +120,7 @@ public class DaoHelper {
 				String col_name = meta.getColumnLabel(i).toLowerCase();
 				if (col_type == Types.TIMESTAMP) {
 					String cn = meta.getColumnTypeName(i).toLowerCase();
-					if (cn.indexOf("TIMESTAMP") != -1 || cn.indexOf("DATETIME") != -1) {// oracle 11g的驱动会将date,timestamp都视为93 
+					if (cn.indexOf("timestamp") != -1 || cn.indexOf("datetime") != -1) {// oracle 11g的驱动会将date,timestamp都视为93 
 						VOHelper.set(ret, col_name, rs.getTimestamp(i));//FIXME 有大小写的问题
 					} else {
 						Date dt = rs.getDate(i);

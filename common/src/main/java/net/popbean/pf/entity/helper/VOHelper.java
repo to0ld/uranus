@@ -95,12 +95,12 @@ public class VOHelper {
 				int maxLen = f.length;//((StringField)f).getMaxLen();
 				String v = jo.getString(f.code);
 				if(v!=null && v.length()>maxLen && f.code.lastIndexOf("_")==-1){//如果是ID_这样的，就不做任何处理
-					throw new Exception("["+f.code+"]的值：["+v+"]超长");
+					throw new Exception("["+model.code+"."+f.code+"]的值：["+v+"]超长(maxlen="+maxLen+",field.len="+v.length()+")");
 				}				
 			}
 			//类型转化
 			if(JOHelper.has(f, jo)){
-				jo.put(f.code,jo.get(f));
+				jo.put(f.code,jo.get(f.code));
 			}
 			pos++;
 		}
@@ -148,7 +148,7 @@ public class VOHelper {
 		String clazz = target.getClass().getName();
 		Map<String,Field> field_bus = _pojo_struct_cache.get(clazz);
 		if(CollectionUtils.isEmpty(field_bus)){//没有就初始化,初期就不加锁了
-			Field[] field_list = target.getClass().getDeclaredFields();
+			Field[] field_list = target.getClass().getFields();
 			Map<String,Field> bus = new HashMap<>();
 			for(Field f:field_list){
 				f.setAccessible(true);

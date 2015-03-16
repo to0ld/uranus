@@ -140,6 +140,15 @@ public class CommonBusinessServiceImpl extends AbstractBusinessService implement
 		}
 		return null;
 	}
+	@Override
+	public String save( IValueObject data,String pk, FieldModel[] guardFields) throws BusinessError {
+		try {
+			return _commondao.save(data, false, pk);
+		} catch (Exception e) {
+			processError(e);
+		}
+		return null;
+	}
 	/**
 	 * 
 	 */

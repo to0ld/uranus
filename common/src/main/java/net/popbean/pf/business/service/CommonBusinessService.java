@@ -30,9 +30,12 @@ public interface CommonBusinessService {
 
 	/**
 	 * 
-	 * @param sql_list 需要执行的sql list
-	 * @param param_list 与sql_list匹配对应的参数列表
-	 * @param client 当前登陆者信息
+	 * @param sql_list
+	 *            需要执行的sql list
+	 * @param param_list
+	 *            与sql_list匹配对应的参数列表
+	 * @param client
+	 *            当前登陆者信息
 	 * @return 将每个sql执行的结果作为一个key压制到一个json object中返回
 	 * @throws BusinessError
 	 */
@@ -40,7 +43,7 @@ public interface CommonBusinessService {
 
 	public List<JSONObject> paging(StringBuilder sql, JSONObject param, Paging paging, SecuritySession client) throws BusinessError;
 
-	public <T extends IValueObject> T find(StringBuilder sql,JSONObject param,Class<T> clazz,SecuritySession client)throws BusinessError;
+	public <T extends IValueObject> T find(StringBuilder sql, JSONObject param, Class<T> clazz, SecuritySession client) throws BusinessError;
 
 	public void executeChange(StringBuilder sql, SecuritySession client) throws BusinessError;
 
@@ -53,6 +56,8 @@ public interface CommonBusinessService {
 	public void batchInsert(List<IValueObject> list, FieldModel[] guardFields) throws BusinessError;
 
 	public String save(IValueObject data, FieldModel[] guardFields) throws BusinessError;
+
+	public String save(IValueObject data, String pk_value, FieldModel[] guardFields) throws BusinessError;
 
 	public void batchUpdate(List<IValueObject> list) throws BusinessError;
 

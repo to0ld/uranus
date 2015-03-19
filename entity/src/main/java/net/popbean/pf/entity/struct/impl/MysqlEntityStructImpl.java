@@ -64,8 +64,8 @@ public class MysqlEntityStructImpl implements EntityStruct {
 		if (Domain.Code.equals(field.type) || Domain.Memo.equals(field.type)) {
 //			ret += " varchar(" + field.length + ")";
 			ret += " varchar(" + Domain.Code.getLength() + ")";
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
@@ -73,16 +73,16 @@ public class MysqlEntityStructImpl implements EntityStruct {
 		} else if (Domain.PK.equals(field.type)) {
 //			ret += " varchar(" + field.length + ")";
 			ret += " varchar(" + Domain.PK.getLength() + ")";
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		}else if(Domain.Ref.equals(field.type)){
 			ret += " varchar(" + Domain.Ref.getLength() + ")";
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default '" + field.defaultValue + "'";// 需要考虑的是，如果字符还得单引号
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
@@ -93,18 +93,18 @@ public class MysqlEntityStructImpl implements EntityStruct {
 				ret += " not null ";
 			}
 		} else if (Domain.Money.equals(field.type)) {
-			ret += " DECIMAL(" + Domain.Money.getLength() + "," + field.precision + ")";
+			ret += " DECIMAL(" + Domain.Money.getLength() + "," + field.fidelity + ")";
 			
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
 		} else if (Domain.Stat.equals(field.type)) {
-			ret += " SMALLINT ";
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
+			ret += " tinyint ";
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
@@ -116,7 +116,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			}else{
 				ret += "  null ";
 			}
-			if (field.defaultValue != null) {//FIXME 强行给人无视了？
+			if (field.def_value != null) {//FIXME 强行给人无视了？
 //				ret += " deault 0 ";//暂时不支持对timestamp设置初始值
 			} else {
 				if(field.code.equalsIgnoreCase("LM_TS")){//当乐观锁用的好吧
@@ -125,9 +125,9 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			}
 			
 		} else if (Domain.Int.equals(field.type)) {
-			ret += " INTEGER ";
-			if (!StringUtils.isBlank(field.defaultValue)) {
-				ret += " default " + field.defaultValue + "";// 需要考虑的是，如果字符还得单引号
+			ret += " int ";
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";

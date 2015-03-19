@@ -84,10 +84,10 @@ public class VOHelper {
 			if(pk_field!=null && !f.code.equals(pk_field.code)){//不是主键
 				//非空 但值为空
 				if(f.isRequired() && StringUtils.isBlank(jo.getString(f.code))){
-					if(f.defaultValue == null){
+					if(f.def_value == null){
 						ErrorBuilder.createBusiness().msg("必填项["+model.code+"."+f.name+"("+f.code+")]为空").execute();
 					}else{
-						jo.put(f.code, f.defaultValue);//确保填补默认值		
+						jo.put(f.code, f.def_value);//确保填补默认值		
 					}
 				}
 			}

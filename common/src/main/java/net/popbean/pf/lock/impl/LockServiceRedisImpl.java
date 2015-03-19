@@ -33,7 +33,7 @@ public class LockServiceRedisImpl implements LockService {
 			//修改一下做法，改用
 			long current_value = operations.opsForValue().increment(business_type+":"+lock_id, 1);
 			if(current_value >1){
-				ErrorBuilder.createBusiness().msg("正在处理，请稍后再试").execute();
+				ErrorBuilder.createBusiness().msg("正在处理，请稍后再试("+current_value+")").execute();
 			}
 		} catch (Exception e) {
 			ErrorBuilder.createBusiness().cause(e).execute();

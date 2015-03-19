@@ -99,8 +99,15 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		EntityModel model = EntityModelHelper.build(vo);
 		//FIXME 应该由model+vo来决定最终的sql 语句
 		JSONObject jo = JOHelper.vo2jo(vo);
+		return save(model,jo,forceValidate,allowClearNull,pk_value);
+	}
+	public V save(EntityModel model, JSONObject jo,boolean forceValidate, boolean allowClearNull, V pk_value) throws Exception {
+		//FIXME 
+//		EntityModel model = entityService.findModel(vo);//FIXME 采用findModel(String code)初期只需要代码里写好就行
+		//FIXME 应该由model+vo来决定最终的sql 语句
 		if (forceValidate) {
-			VOHelper.validate(model, vo);
+			
+			VOHelper.validate(model, jo);
 		}
 		V pk = null;
 		StringBuilder sql = new StringBuilder();
@@ -138,11 +145,11 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 			if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Money) || model.type.equals(Domain.Int)){
 				if (!JOHelper.has(model.code, jo) || StringUtils.isBlank(jo.getString(model.code))) {
 					if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Int)){
-						jo.put(model.code, TypeUtils.castToInt(model.defaultValue));// 确保填补默认值
+						jo.put(model.code, TypeUtils.castToInt(model.def_value));// 确保填补默认值
 					}else if(model.type.equals(Domain.Money)){
-						jo.put(model.code, TypeUtils.castToBigDecimal(model.defaultValue));// 确保填补默认值
+						jo.put(model.code, TypeUtils.castToBigDecimal(model.def_value));// 确保填补默认值
 					}else{
-						jo.put(model.code, model.defaultValue);// 确保填补默认值	
+						jo.put(model.code, model.def_value);// 确保填补默认值	
 					}
 					
 				}
@@ -157,11 +164,11 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 				Object value = VOHelper.get(vo, model.code);
 				if(value == null || StringUtils.isBlank(value.toString())){
 					if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Int)){
-						VOHelper.set(vo,model.code,TypeUtils.castToInt(model.defaultValue));// 确保填补默认值
+						VOHelper.set(vo,model.code,TypeUtils.castToInt(model.def_value));// 确保填补默认值
 					}else if(model.type.equals(Domain.Money)){
-						VOHelper.set(vo,model.code,TypeUtils.castToBigDecimal(model.defaultValue));// 确保填补默认值
+						VOHelper.set(vo,model.code,TypeUtils.castToBigDecimal(model.def_value));// 确保填补默认值
 					}else{
-						VOHelper.set(vo,model.code,model.defaultValue);
+						VOHelper.set(vo,model.code,model.def_value);
 					}
 				}
 			}
@@ -659,7 +666,12 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		} catch (Exception e) {
 			// 参考spring jdbc template的写法，尽快释放连接，据说能避免connection pool的死锁
 			after(rs, stmt, conn);
-			ErrorBuilder.createSys().cause(e).msg(DaoHelper.parseMsg(struct)).execute();
+			if(struct == null){
+				ErrorBuilder.createSys().cause(e).execute();
+			}else{
+				ErrorBuilder.createSys().cause(e).msg(DaoHelper.parseMsg(struct)).execute();	
+			}
+			
 		} finally {
 			after(rs, stmt, conn);
 		}

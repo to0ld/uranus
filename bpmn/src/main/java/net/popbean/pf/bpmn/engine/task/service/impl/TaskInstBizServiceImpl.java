@@ -71,7 +71,7 @@ public class TaskInstBizServiceImpl extends AbstractBusinessService implements T
 			TaskInstanceExtBusinessService taskext = getTaskExt(t.getProcessDefinitionId(),t.getTaskDefinitionKey());
 			if (taskext != null) {
 				ctx.put("COMMIT_MESSAGE", message);
-				taskext.validateForCommit(t, ctx, env);// FIXME 如果有必要就clone一下数据，避免被污染
+				taskext.validateForCommit(t, ctx, env);
 			}
 			updateTask(t, 3, message, env);
 			taskService.complete(t.getId(), ctx);
@@ -80,7 +80,7 @@ public class TaskInstBizServiceImpl extends AbstractBusinessService implements T
 			
 			if (taskext != null) {
 				ctx.put("COMMIT_MESSAGE", message);
-				taskext.executeForCommit(t, ctx, env);// FIXME 如果有必要就clone一下数据，避免被污染
+				taskext.executeForCommit(t, ctx, env);
 			}
 		} catch (Exception e) {
 			processException(e);
@@ -145,7 +145,7 @@ public class TaskInstBizServiceImpl extends AbstractBusinessService implements T
 																						// 
 			TaskInstanceExtBusinessService taskext = getTaskExt(t.getProcessDefinitionId(),t.getTaskDefinitionKey());
 			if (taskext != null) {
-				taskext.validateForReject(t, ctx, env);// FIXME 如果有必要就clone一下数据，避免被污染
+				taskext.validateForReject(t, ctx, env);
 			}
 			
 			updateTask(t, 7, message, env);//更新rlt_taskinst_account的状态,要更新_code,_name
@@ -154,7 +154,7 @@ public class TaskInstBizServiceImpl extends AbstractBusinessService implements T
 			
 			//
 			if (taskext != null) {
-				taskext.executeForReject(t, ctx, env);// FIXME 如果有必要就clone一下数据，避免被污染
+				taskext.executeForReject(t, ctx, env);
 			}
 			String process = getProcessName(t.getProcessInstanceId());
 			log("BPM.TASK.REJECT", "任务编号为[" + t.getId() + "]，流程实例为[" + t.getProcessInstanceId() + "]的[" + process + "]流程", env);

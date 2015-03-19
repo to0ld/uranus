@@ -15,7 +15,6 @@ public class FieldHelper {
 		ret.code = code;
 		ret.name = name;
 		ret.type = Domain.PK;
-		ret.ispk = true;
 		ret.length = Domain.PK.getLength();
 		return ret;
 	}

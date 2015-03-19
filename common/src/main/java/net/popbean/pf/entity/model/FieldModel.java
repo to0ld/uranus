@@ -7,13 +7,14 @@ import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
 import net.popbean.pf.entity.field.annotation.RelationType;
+import net.popbean.pf.entity.impl.AbstractValueObject;
 /**
  * 
  * @author to0ld
  *
  */
 @Entity(code="pb_pf_field")
-public class FieldModel implements Serializable, Cloneable,IValueObject {
+public class FieldModel extends AbstractValueObject {
 
 	/**
 	 * 
@@ -24,22 +25,32 @@ public class FieldModel implements Serializable, Cloneable,IValueObject {
 	public static final int REQ_NO = 0;
 	//
 	@Field(domain=Domain.Ref)
-	public String entity_ref;
-	@Field(domain=Domain.PK)
-	public String field_id;
+	public String entity_id;
+	@Field
 	public Domain type;
+	@Field
 	public String code;
+	@Field
 	public String name;
+	@Field(domain=Domain.Stat)
 	public int required;
-	public boolean ispk;
+//	@Field
+//	public boolean ispk;
+	@Field(domain=Domain.Int)
 	public int length;
-	public int precision;
-	public String defaultValue;
+	@Field(domain=Domain.Int)
+	public int fidelity;//没办法precison不能用，是关键字
+	@Field
+	public String def_value;
 	//
+	@Field
 	public String clazz;//所用的类
-	//
-	public String code_relation_entity;//引用表编码
-	public String pk_relation_entity;//引用表唯一标示
+	//来源表编码
+	@Field
+	public String relation_code;//引用表编码
+	//来源表的引用字段a.pk到了b可能就是叫fk了
+	@Field
+	public String id_key_relation;//引用表唯一标示
 	public RelationType rt = RelationType.None;
 	//
 	/**
@@ -48,5 +59,8 @@ public class FieldModel implements Serializable, Cloneable,IValueObject {
 	 */
 	public boolean isRequired(){
 		return (required == REQ_YES);
+	}
+	public boolean isPk(){
+		return Domain.PK.equals(type);
 	}
 }

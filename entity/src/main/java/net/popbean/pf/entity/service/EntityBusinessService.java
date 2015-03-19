@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import net.popbean.pf.entity.IValueObject;
 import net.popbean.pf.entity.model.EntityModel;
+import net.popbean.pf.entity.model.RelationModel;
 import net.popbean.pf.exception.BusinessError;
 
 /**
@@ -21,6 +22,13 @@ public interface EntityBusinessService<V> {
 	 * @throws BusinessError
 	 */
 	public EntityModel findModel(String entity_code)throws BusinessError;
+	/**
+	 * 
+	 * @param entity_code
+	 * @return
+	 * @throws BusinessError
+	 */
+	public List<RelationModel> fetchRelation(String entity_code)throws BusinessError;
 	/**
 	 * 
 	 * @param vo

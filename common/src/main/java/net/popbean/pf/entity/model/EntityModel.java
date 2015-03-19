@@ -1,5 +1,6 @@
 package net.popbean.pf.entity.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.popbean.pf.entity.field.Domain;
@@ -34,7 +35,7 @@ public class EntityModel extends AbstractValueObject {
 	@Field
 	public String clazz;//其实我不想留这个字段，没有它用code一样可以，因为表名是唯一的
 	//
-	public List<FieldModel> field_list;
+	public List<FieldModel> field_list = new ArrayList<>();
 	//FIXME 有无必要去映射到db中?
 	/**
 	 * 

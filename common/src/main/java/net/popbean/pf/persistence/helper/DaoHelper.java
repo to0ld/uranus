@@ -78,9 +78,9 @@ public class DaoHelper {
 				int col_type = meta.getColumnType(i);
 				//在mysql的体系中meta.getColumnName(i)是原始的名字，无法拿到别名
 //				String col_name = meta.getColumnName(i).toUpperCase();
-				String col_name = meta.getColumnLabel(i).toUpperCase();
+				String col_name = meta.getColumnLabel(i).toLowerCase();
 				if (col_type == Types.TIMESTAMP) {
-					String cn = meta.getColumnTypeName(i).toUpperCase();
+					String cn = meta.getColumnTypeName(i).toLowerCase();
 					if (cn.indexOf("TIMESTAMP") != -1 || cn.indexOf("DATETIME") != -1) {// oracle 11g的驱动会将date,timestamp都视为93 
 						vo.put(col_name, rs.getTimestamp(i));
 					} else {
@@ -790,7 +790,7 @@ public class DaoHelper {
 					//如果sql中有，但是传入的参数没有，那也是个悲剧啊
 					placeholder = placeholder.toLowerCase();
 					if(StringUtils.isBlank(jo.getString(placeholder))){
-						ErrorBuilder.createSys().msg("["+placeholder+"]为空，无法置换").execute();
+						ErrorBuilder.createSys().msg("["+placeholder+"]为空，无法置换(sql="+sql+"\njo="+JSON.toJSONString(jo)+")").execute();
 					}
 					list.add(placeholder);// 将其保留,小写保留之
 					Object t = JOHelper.getObjectByIgnoreCase(jo, placeholder);//依然有可能为空

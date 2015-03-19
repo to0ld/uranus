@@ -32,8 +32,6 @@ public class AccountVO extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain = Domain.Stat)
-	public Integer stat;
 	@Field
 	public String pwd;// 加密后的
 	@Field

@@ -20,6 +20,9 @@ public class AbstractValueObject implements IValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 3852105815084274103L;
+	//
+	public static int STAT_ALL = 999;//全部
+	//
 	@Field(domain = Domain.PK, name = "主键")
 	public String id;
 	@Field(name = "创建者", domain = Domain.Ref)

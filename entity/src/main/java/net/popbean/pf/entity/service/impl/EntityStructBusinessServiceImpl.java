@@ -10,6 +10,7 @@ import net.popbean.pf.entity.IValueObject;
 import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
+import net.popbean.pf.entity.model.RelationModel;
 import net.popbean.pf.entity.model.helper.EntityModelHelper;
 import net.popbean.pf.entity.service.EntityStructBusinessService;
 import net.popbean.pf.entity.struct.dao.EntityStructDao;
@@ -194,7 +195,7 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 	public void syncEntityModel(List<EntityModel> em_list, SecuritySession session) throws BusinessError {
 		try {
 			for (EntityModel model : em_list) {
-				List<EntityModel> list = EntityModelHelper.buildForRelation(model);
+				List<RelationModel> list = EntityModelHelper.buildForRelation(model);
 				_commondao.batchReplace(list);
 				syncEntityModel(model, session);
 			}
@@ -210,24 +211,24 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 			// 2- 修改：无论entity_code是否发生变化，统一用原来的主键删除
 			List<FieldModel> field_list = em.field_list;
 			// 进行重名的保护
-			//FIXME code_account_code vs c_account_code vs c_account vs code_account 只好取code_account了
-			StringBuilder sql = new StringBuilder(" select 1 from pb_pf_entity where code_entity=${code_entity} $[and pk_entity!=${pk_entity}]");
+			//不是同一个资源，叫同一个code，不行
+			StringBuilder sql = new StringBuilder(" select 1 from pb_pf_entity where code=${code} $[and clazz!=${clazz}] $[and id!=${id}]");
 			JSONObject param = JOHelper.vo2jo(em);
 			_commondao.assertTrue(sql, param, "不能重名，已经存在entity_code=" + em.code);
 
 			// 清除老数据
 			// FIXME 这个逻辑有问题，万一改了entity_code咋办
-			sql = new StringBuilder(" delete from pb_pf_field where pk_entity in (select a.pk_entity from pb_pf_entity a where a.code_entity=${code_entity}) ");
+			sql = new StringBuilder(" delete from pb_pf_field where entity_id in (select a.id from pb_pf_entity a where a.code=${code}) ");
 			_commondao.executeChange(sql, param);
-			sql = new StringBuilder(" delete from pb_pf_entity where entity_code=${code_entity} ");
+			sql = new StringBuilder(" delete from pb_pf_entity where code=${code} ");
 			_commondao.executeChange(sql, param);
 			// 插入新数据
 			String pk_entity_new = IdGenHelper.genID(em.code, null);
 			if (StringUtils.isBlank(pk_entity)) {
 			} else {// 修改
-				sql = new StringBuilder(" delete from pb_pf_field where pk_entity=${pk_entity} ");
+				sql = new StringBuilder(" delete from pb_pf_field where entity_id=${id} ");
 				_commondao.executeChange(sql, param);
-				sql = new StringBuilder(" delete from pb_pf_entity where pk_entity=${pk_entity} ");
+				sql = new StringBuilder(" delete from pb_pf_entity where id=${id} ");
 				_commondao.executeChange(sql, param);
 			}
 			//
@@ -235,8 +236,8 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 			_commondao.save(em, false, pk_entity_new);
 			for (FieldModel v : field_list) {
 				String pk_field = IdGenHelper.genID(em.code, v.code);
-				v.field_id = pk_field;
-				v.entity_ref = pk_entity_new;
+				v.id = pk_field;
+				v.entity_id = pk_entity_new;
 			}
 			_commondao.batchReplace(field_list);
 			return pk_entity_new;

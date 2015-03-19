@@ -3,16 +3,24 @@ package net.popbean.pf.entity.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
 import net.popbean.pf.business.service.impl.AbstractBusinessService;
 import net.popbean.pf.entity.IValueObject;
+import net.popbean.pf.entity.helper.JO;
+import net.popbean.pf.entity.helper.JOHelper;
+import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.entity.model.EntityModel;
+import net.popbean.pf.entity.model.FieldModel;
+import net.popbean.pf.entity.model.RelationModel;
+import net.popbean.pf.entity.model.helper.EntityModelHelper;
 import net.popbean.pf.entity.service.EntityBusinessService;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
+import net.popbean.pf.persistence.helper.DaoHelper;
 /**
  * 
  * @author to0ld
@@ -25,8 +33,12 @@ public class EntityBusinessServiceImpl extends AbstractBusinessService implement
 	public EntityModel findModel(String entity_code) throws BusinessError {
 		try {
 			//1- 查主表，子表
-			//2-拼凑得到entity model(根据field model拼凑得到entity model可以先不用封装)
-			throw new UnsupportedOperationException("目前暂不支持由实体名称获得entity model");
+			StringBuilder sql = new StringBuilder("select * from pb_pf_entity where code=${code}");
+			EntityModel model = _commondao.find(sql, JO.gen("code",entity_code),EntityModel.class,"没有找到编码为"+entity_code+"的实体");
+			sql = new StringBuilder("select * from pb_pf_field where entity_id=${id}");
+			List<FieldModel> fields = _commondao.query(sql, JO.gen("id",model.id),FieldModel.class);
+			model.field_list = fields;
+			return model;
 		} catch (Exception e) {
 			ErrorBuilder.process(e);
 		}
@@ -83,6 +95,21 @@ public class EntityBusinessServiceImpl extends AbstractBusinessService implement
 			processError(e);
 		}
 		return new ArrayList<T>();
+	}
+	/**
+	 * 
+	 */
+	@Override
+	public List<RelationModel> fetchRelation(String entity_code) throws BusinessError {
+		try {
+			//以左侧或者右侧为基准查找
+			StringBuilder sql = new StringBuilder("select * from pb_pf_relation where 1=1 and (entity_code_main=${code} or entity_code_slave=${code})");
+			List<RelationModel> ret = _commondao.query(sql, JO.gen("code",entity_code), RelationModel.class);
+			return ret;
+		} catch (Exception e) {
+			processError(e);
+		}
+		return new ArrayList<>();
 	}
 
 }

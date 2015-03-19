@@ -77,7 +77,7 @@ public class AuthenticateBusinessServiceImpl extends AbstractBusinessService imp
 
 			// FIXME 是否已经到了启用时间？是否已经超出有效期？
 			// 状态是否正常？
-			int istat = account_inst.stat;
+			int istat = account_inst.status;
 			if(istat != AccountVO.STAT_NONE){
 				String type = "未知";
 				if (istat == AccountVO.STAT_BLOCK) {

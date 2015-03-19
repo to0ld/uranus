@@ -16,9 +16,9 @@ import net.popbean.pf.entity.field.annotation.RelationType;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.EntityType;
 import net.popbean.pf.entity.model.FieldModel;
+import net.popbean.pf.entity.model.RelationModel;
 import net.popbean.pf.exception.ErrorBuilder;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 /**
@@ -29,7 +29,7 @@ import org.springframework.util.CollectionUtils;
 public class EntityModelHelper {
 	public static String REF_SPLIT = "@#@";//pk@#@name
 	private static Map<String, EntityModel> _cache = new ConcurrentHashMap<>();
-	private static Map<String, List<EntityModel>> _relation_cache = new ConcurrentHashMap<>();
+	private static Map<String, List<RelationModel>> _relation_cache = new ConcurrentHashMap<>();
 	/**
 	 * 
 	 * @param clazz
@@ -48,7 +48,12 @@ public class EntityModelHelper {
 		}
 		model = new EntityModel();
 		model.code = entity.code();
-		model.name = entity.name();
+		if(StringUtils.isBlank(entity.name())){
+			model.name = entity.code();
+		}else{
+			model.name = entity.name();	
+		}
+		
 		model.clazz = key;
 		List<FieldModel> fm_list = parseFieldModelList(clazz);
 		model.field_list = fm_list;
@@ -77,14 +82,14 @@ public class EntityModelHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<EntityModel> buildForRelation(Class<? extends IValueObject> clazz)throws Exception{
+	public static List<RelationModel> buildForRelation(Class<? extends IValueObject> clazz)throws Exception{
 		Entity entity = clazz.getAnnotation(Entity.class);
 		//
 		if(entity == null){
 			ErrorBuilder.createSys().msg("传入的类("+clazz+")没有定义@Entity，无法提取实体模型信息").execute();
 		}
 		String key = entity.code();
-		List<EntityModel> ret = _relation_cache.get(key);
+		List<RelationModel> ret = _relation_cache.get(key);
 		if(ret != null){
 			return ret;
 		}
@@ -94,54 +99,51 @@ public class EntityModelHelper {
 		_relation_cache.put(key, ret);
 		return ret;
 	}
-	public static List<EntityModel> buildForRelation(EntityModel entity)throws Exception{
+	/**
+	 * @param entity
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<RelationModel> buildForRelation(EntityModel entity)throws Exception{
 //		model.field_list = fm_list;
-		List<EntityModel> ret = new ArrayList<>();
+		//FIXME 构建relationmodel
+		List<RelationModel> ret = new ArrayList<>();
 		if(EntityType.Bridge.equals(entity.type)){//桥接表的情况
 			//得找到两个ref，并且一主一从才行
+			RelationModel rm = new RelationModel();
+			rm.code = entity.code;
 			int loop = 0;//够2才能跑,暂时不管一个entity中多个master，多个slave的情况
 			for(FieldModel fm:entity.field_list){
 				if(Domain.Ref.equals(fm.type) && !RelationType.Master.equals(fm.rt)){
 					loop+=1;//FIXME 如果要知道准确的少了啥多了啥，就采用i_master,i_slave
+					rm.id_key_main = fm.code;
+					rm.entity_code_main = fm.relation_code;
 				}
 				if(Domain.Ref.equals(fm.type) && !RelationType.Slave.equals(fm.rt)){
 					loop+=1;
+					rm.id_key_slave = fm.code;
+					rm.entity_code_slave = fm.relation_code;
 				}
 			}
 			if(loop !=2){//如果需要更明晰的，就改逻辑吧
 				ErrorBuilder.createSys().msg("作为桥接表得有master&slave，少一个不行多一个也不行").execute();
 			}
-			ret.add(entity);
+			ret.add(rm);
 			return ret;
-//			if(loop ==2){
-//				EntityModel em = new EntityModel();
-//				em.code = entity.code;
-//				em.name = entity.name;
-//				FieldModel pk_field = entity.findPK();
-//				list.add(pk_field);
-//				em.field_list = list;
-//				ret.add(em);
-//				return ret;
-//			}
 		}else{//非桥接表，找ref
 			//只要找到一个就好
 			for(FieldModel fm:entity.field_list){
-				if(Domain.Ref.equals(fm.type) && !RelationType.None.equals(fm.rt)){
-					EntityModel em = new EntityModel();
+				if(Domain.Ref.equals(fm.type) && !RelationType.None.equals(fm.rt)){//ref类型 且 为指定关系
+					RelationModel em = new RelationModel();
+					//
 					em.code = entity.code;
-					em.name = entity.name;
-					//构建三个字段pk,main(),slave()
-					FieldModel pk_field = findPK(entity.field_list);//同时也是slave
-					FieldModel slave = ObjectUtils.clone(pk_field);
-					slave.rt = RelationType.Slave;
-					//获得master
-					FieldModel master = ObjectUtils.clone(fm);
-					master.rt = RelationType.Master;
-					List<FieldModel> list = new ArrayList<>();
-					list.add(pk_field);
-					list.add(master);
-					list.add(slave);
-					em.field_list = list;
+					if(RelationType.Master.equals(fm.rt)){
+						em.id_key_main = fm.code;
+						em.entity_code_main = fm.relation_code;
+					}else if(RelationType.Slave.equals(fm.rt)){
+						em.id_key_slave = fm.code;
+						em.entity_code_slave = fm.relation_code;
+					}
 					ret.add(em);
 				}
 			}
@@ -201,16 +203,16 @@ public class EntityModelHelper {
 				if(!StringUtils.isBlank(def)){
 					def = def.replaceAll("\\(", "");
 					def = def.replaceAll("\\)", "");
-					field.defaultValue = def.trim();
+					field.def_value = def.trim();
 				}
 			}else{
 				field.type = Domain.Money;
-				field.precision = p;
+				field.fidelity = p;
 				if(!StringUtils.isBlank(def)){
 					def = def.replaceAll("\\(", "");
 					def = def.replaceAll("\\)", "");
 					if(!StringUtils.isBlank(def)){
-						field.defaultValue = def.trim();
+						field.def_value = def.trim();
 					}
 				}
 			}
@@ -225,14 +227,14 @@ public class EntityModelHelper {
 			if(!StringUtils.isBlank(def)){
 				def = def.replaceAll("\\(", "");
 				def = def.replaceAll("\\)", "");
-				field.defaultValue = def.trim();
+				field.def_value = def.trim();
 			}
 		}else if(type == Types.INTEGER){
 			field.type = Domain.Int;
 			if(!StringUtils.isBlank(def)){
 				def = def.replaceAll("\\(", "");
 				def = def.replaceAll("\\)", "");
-				field.defaultValue = def.trim();
+				field.def_value = def.trim();
 			}
 		}else if(type == Types.LONGVARCHAR){//FIXME 其实这个只是为了容错，正常情况绝对不会产生的
 		}
@@ -267,8 +269,8 @@ public class EntityModelHelper {
 		if(Domain.Ref.equals(model.type)){//如果是ref类型，还得继续找
 			if(!IValueObject.class.equals(a.relation())){
 				EntityModel rlt_model = build(a.relation());
-				model.code_relation_entity = rlt_model.code;
-				model.pk_relation_entity = rlt_model.findPK().code;
+				model.relation_code = rlt_model.code;
+				model.id_key_relation = rlt_model.findPK().code;
 			}
 		}
 		return model;

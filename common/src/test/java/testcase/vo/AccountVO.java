@@ -37,7 +37,7 @@ public class AccountVO implements IValueObject{
 	@Field(name = "创建时间",domain=Domain.TimeStamp)
 	public Timestamp ts_crt;
 	
-	@Field(name = "状态", domain=Domain.Stat,range = "0:编辑@3:处理中@5:已经完成")
+	@Field(name = "状态", domain=Domain.Stat,rangeset = "0:编辑@3:处理中@5:已经完成")
 	public Integer i_stat;
 	
 	@Field(name = "用户信息备注",domain=Domain.Memo)

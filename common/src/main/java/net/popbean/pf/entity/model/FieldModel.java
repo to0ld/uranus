@@ -1,8 +1,5 @@
 package net.popbean.pf.entity.model;
 
-import java.io.Serializable;
-
-import net.popbean.pf.entity.IValueObject;
 import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
@@ -32,6 +29,8 @@ public class FieldModel extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
+	@Field
+	public String rangeset;
 	@Field(domain=Domain.Stat)
 	public int required;
 //	@Field

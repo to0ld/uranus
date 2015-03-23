@@ -26,12 +26,12 @@ public @interface Field {
 
 	boolean required() default true;
 
-	String range() default "";
+	String rangeset() default "";
 
 	// 以下适用于relation ship的情况，如果有必要就单独弄一个annotation
 	// FIXME 可能会导致业务模块之间的强依赖，需要继续观察，如果有问题，切换回String
 	// type == domain.ref时有效，如果pb_pf_ds_range有必要就放到common module中
-	Class<IValueObject> relation() default IValueObject.class;
+	Class<? extends IValueObject> relation() default IValueObject.class;
 
 	RelationType rt() default RelationType.None;
 }

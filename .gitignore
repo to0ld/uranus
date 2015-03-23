@@ -15,3 +15,5 @@
 .*.swo
 .*.swn
 /settings_osc.xml
+.metadata
+

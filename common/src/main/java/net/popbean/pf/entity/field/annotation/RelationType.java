@@ -7,7 +7,7 @@ package net.popbean.pf.entity.field.annotation;
  *
  */
 public enum RelationType {
-	None, //
-	Master,
-	Slave
+	None, //无关联
+	Master,//主表,source
+	Slave//子表,target
 }

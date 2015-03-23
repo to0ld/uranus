@@ -263,6 +263,7 @@ public class EntityModelHelper {
 		}
 		model.type = a.domain();
 		model.name = a.name();
+		model.rangeset = a.rangeset();
 		model.clazz = f.getType().getName();
 		model.length = a.domain().getLength();
 		//

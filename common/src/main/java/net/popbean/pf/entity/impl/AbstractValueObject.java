@@ -29,7 +29,7 @@ public class AbstractValueObject implements IValueObject {
 	public String account_crt_ref;
 	@Field(name = "所属企业", domain = Domain.Ref)
 	public String company_crt_ref;
-	@Field(name = "状态", domain = Domain.Stat, range = "0:编辑@3:处理中@5:已完成")
+	@Field(name = "状态", domain = Domain.Stat, rangeset = "0:编辑@3:处理中@5:已完成")
 	public Integer status;
 	@Field(domain = Domain.TimeStamp, name = "创建时间")
 	public Timestamp crt_ts;

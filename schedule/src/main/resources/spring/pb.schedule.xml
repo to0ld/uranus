@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" 
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>任务调度</description>
+	<bean id="spring.scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+	lazy-init="false" destroy-method="destroy">
+		<property name="autoStartup" value="true"/>
+		<property name="waitForJobsToCompleteOnShutdown" value="false"/>
+		<property name="dataSource" ref="dataSource"/>
+		<property name="overwriteExistingJobs" value="true"/>
+		<property name="applicationContextSchedulerContextKey" value="appctx"/>
+		<property name="configLocation" value="classpath:quartz.properties"/>
+		<property name="startupDelay" value="30"/><!-- 延时启动 -->
+	</bean>
+</beans>

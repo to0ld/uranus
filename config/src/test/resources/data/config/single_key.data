@@ -1,0 +1,10 @@
+{
+	"data":{
+		"code":"single_key_test",
+		"name":"单一key值测试",
+		"app_code":"testcase",
+		"level":11,
+		"clazz":"testcase.config.vo.MailConfig",
+		"memo":"全局级别的变量，这不是省事么"
+	}
+}

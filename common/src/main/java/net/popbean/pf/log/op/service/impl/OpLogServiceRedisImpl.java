@@ -39,9 +39,9 @@ public class OpLogServiceRedisImpl implements OpLogService {
 			}
 			if(session!=null){//并入登陆信息
 				if(session.company != null){
-					t.put("pk_company", session.company.company_id);//有可能会出错
-					t.put("code_company", session.company.company_code);
-					t.put("name_company", session.company.company_name);
+					t.put("pk_company", session.company.id);//有可能会出错
+					t.put("code_company", session.company.code);
+					t.put("name_company", session.company.name);
 				}
 				t.put("code_account", session.account_code);
 				t.put("name_account", session.account_name);

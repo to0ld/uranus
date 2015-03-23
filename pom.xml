@@ -28,6 +28,8 @@
 		<module>mvc</module>
 		<module>bpmn</module>
 		<module>bill</module>
+		<module>schedule</module>
+		<module>config</module>
 	</modules>
 	<build>
 		<pluginManagement>

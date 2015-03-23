@@ -25,7 +25,7 @@ public class DataSetHelper {
 //			param.put("LOGIN_PK_DEPT",client.dept_list.get(0).get("PK_DEPT"));	
 //		}
 		if(client.company != null){
-			param.put("pk_company",client.company.company_id);	
+			param.put("pk_company",client.company.id);	
 		}
 //		if(VOHelper.has("FILTER", param)){
 //			param.put("FILTER","%"+param.get("FILTER")+"%");

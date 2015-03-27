@@ -1,9 +1,12 @@
 package net.popbean.pf.bill.helpers;
 
+import java.util.List;
+
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -11,10 +14,23 @@ import net.popbean.pf.bill.vo.BillEntityModel;
 import net.popbean.pf.bill.vo.BillEventModel;
 import net.popbean.pf.bill.vo.BillFieldModel;
 import net.popbean.pf.bill.vo.BillModel;
+import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
+import net.popbean.pf.entity.model.RelationModel;
 
 public class BillModelHelper {
+	public static BillFieldModel findPK(List<BillFieldModel> field_list){
+		if(CollectionUtils.isEmpty(field_list)){
+			return null;
+		}
+		for(BillFieldModel fm:field_list){
+			if(Domain.Pk.equals(fm.domain)){
+				return fm;
+			}
+		}
+		return null;
+	}
 	/**
 	 * 根据model以及主表数据得到stage
 	 * @param model
@@ -39,12 +55,29 @@ public class BillModelHelper {
 		}
 		return null;
 	}
-	public static EntityModel convert(BillEntityModel model){
+//	public static EntityModel convert(BillEntityModel model){
+//		EntityModel ret = new EntityModel();
+//		ret.code = model.code;
+//		ret.name = model.name;
+//		for(BillFieldModel bfm:model.fields){
+//			FieldModel fm = convert(bfm);
+//			ret.field_list.add(fm);
+//		}
+//		return ret;
+//	}
+	public static EntityModel convert(BillEntityModel model,RelationModel rm){
 		EntityModel ret = new EntityModel();
 		ret.code = model.code;
 		ret.name = model.name;
 		for(BillFieldModel bfm:model.fields){
 			FieldModel fm = convert(bfm);
+			ret.field_list.add(fm);
+		}
+		//如果是桥接，就放弃
+		if(rm!=null && !RelationModel.TYPE_BRIDGE.equals(rm.type)){
+			FieldModel fm = new FieldModel();
+			fm.code = rm.id_key_slave;
+			fm.type = Domain.Ref;
 			ret.field_list.add(fm);
 		}
 		return ret;
@@ -54,6 +87,7 @@ public class BillModelHelper {
 		ret.code = model.code;
 		ret.name = model.name;
 		ret.type = model.domain;
+		ret.length = model.domain.getLength();
 		return ret;
 	}
 }

@@ -41,7 +41,7 @@ public class EnumTestCase {
 		 * 
 		 */
 		private static final long serialVersionUID = -3554408395180618172L;
-		@Field(domain=Domain.PK,code="pk_test")
+		@Field(domain=Domain.Pk,code="pk_test")
 		public String pk_test;
 		@Field(domain=Domain.Code)
 		public Domain domain;

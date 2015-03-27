@@ -101,7 +101,7 @@ public class EntityStructDao extends CommonDao {
 				FieldModel f = entry.getValue();
 				FieldModel temp = findField(fields, f);// temp == null then add
 				String sql = convert.alter(table_code, f, temp);
-				if (CollectionUtils.contains(ret.iterator(), sql)) {
+				if (!CollectionUtils.contains(ret.iterator(), sql)) {
 					ret.add(sql);
 				}
 			}
@@ -300,7 +300,7 @@ public class EntityStructDao extends CommonDao {
 			for(rs_col = dmd.getColumns(null, dmd.getUserName().toUpperCase(), entity_code, null);rs_col.next();){
 				FieldModel f = EntityModelHelper.buildFieldModel(rs_col);
 				if(f.code.equals(pk_field)){
-					f.type = Domain.PK;
+					f.type = Domain.Pk;
 					f.length = 60;
 				}
 				field_list.add(f);

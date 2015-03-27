@@ -54,7 +54,7 @@ public class EntityBusinessServiceImpl extends AbstractBusinessService implement
 			String pk_value = _commondao.save(vo);
 			return pk_value;
 		} catch (Exception e) {
-			processError(e);//FIXME 看起来放abstractbusinessservice中更合适
+			processError(e);
 		}
 		return null;
 	}

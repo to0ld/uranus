@@ -89,7 +89,7 @@ public class BillModelBusinessServiceRedisImpl extends AbstractBusinessService i
 	public BillModel findById(String code, String id, boolean hasData, SecuritySession client) throws BusinessError {
 		try {
 			BillModel model = find(code, null, false, client);
-			EntityModel main_model = BillModelHelper.convert(model.main);
+			EntityModel main_model = BillModelHelper.convert(model.main,null);
 			StringBuilder sql = new StringBuilder("select * from "+main_model.code+" where "+main_model.findPK()+"=${id}");
 			
 			JSONObject main_data = _commondao.find(sql, JO.gen("id",id));//从model中得到

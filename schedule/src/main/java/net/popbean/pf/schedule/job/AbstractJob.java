@@ -4,7 +4,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.popbean.pf.config.service.ConfigBusinessService;
+import net.popbean.pf.config.vo.IConfigValueStore;
 import net.popbean.pf.entity.helper.JO;
+import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.schedule.service.ScheduleBusinessService;
 
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -54,7 +58,6 @@ public abstract class AbstractJob implements Job {
 	 */
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		/**
 		JobDataMap dataMap = null;
 		ScheduleBusinessService smService = null;
 		JobKey key = context.getJobDetail().getKey();
@@ -66,26 +69,26 @@ public abstract class AbstractJob implements Job {
 			this.appContext = getAppCtx(context);
 			//
 			smService = getSpringBean("service/pf/schedule", ScheduleBusinessService.class);
-			JSONObject inst = smService.findJob(param);//FIXME 在
+			JSONObject inst = smService.findJob(param);//FIXME 这个应该找到job model
 			//
 			dataMap = context.getJobDetail().getJobDataMap();
 			param.putAll(dataMap);
 			String param_code = inst.getString("CFG_CODE");// 获得配置
 			String app_code = inst.getString("APP_CODE");
+			//
 			if (!StringUtils.isEmpty(param_code)) {
 				try {
-					ConfigBizService configService = this.getSpringBean("service/pf/config/redis");
-					VO param_ = configService.findValueByOwner(app_code, param_code, null);// FIXME
-																							// 目前还没找到机会去把pk_owner塞进去，除非是把mt_pf_job那里下手
-					log.debug("--->" + JO.toJSONString(param_));
-					if (param != null && !param_.isEmpty()) {
-						param.putAll(param_);
+					ConfigBusinessService configService = this.getSpringBean("service/pf/config/redis");
+					IConfigValueStore param_ = configService.findValue(app_code, param_code, null);
+					if (param_ != null) {//合并参数
+						JSONObject tmp = JSON.parseObject(JSON.toJSONString(param_));
+						param.putAll(tmp);
 					}
 				} catch (Exception e) {
 					log.error(e);// 至少要记录一下错误
 				}
 			}
-			Timestamp stamp = inst.getTimestamp(JobMeta.LAST_EXEC_TS.getKey());// 上一次成功启动的时间
+			Timestamp stamp = inst.getTimestamp("LAST_EXEC_TS");// 上一次成功启动的时间
 
 			Timestamp startTs = smService.startJobExecute(param, null);// mark一下
 			if (startTs == null) {
@@ -94,13 +97,12 @@ public abstract class AbstractJob implements Job {
 			} else {
 				logVo.put("current_exec_start_ts", startTs);
 				param.put("LAST_EXEC_TS", stamp);
-				// log.debug()
-				log.debug("<---" + JO.toJSONString(param));
+				log.debug("<---" + JSON.toJSONString(param));
 
 				procBusiness(context, param);// 执行业务
 				Timestamp endTs = smService.endJobExecute(param, null);
 
-				VOHelper.copy(vo, logVo);
+				JOHelper.copy(vo, logVo);
 				if (endTs == null) {
 					logVo.put("opt_cate", 0);
 					logVo.put("error_msg", "结束任务时失败。");
@@ -110,9 +112,9 @@ public abstract class AbstractJob implements Job {
 				}
 			}
 		} catch (Exception e) {
-			VO vo = ProfLogHelper.endVO(this.getClass().getSimpleName(), null);
+			JSONObject vo = ProfLogHelper.endVO(this.getClass().getSimpleName(), null);
 			try {
-				VOHelper.copy(vo, logVo);
+				JOHelper.copy(vo, logVo);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -121,6 +123,6 @@ public abstract class AbstractJob implements Job {
 			log.error(e);
 			throw new JobExecutionException("JOB_EXCUTE_ERROR", e);
 		} finally {
-		}**/
+		}
 	}
 }

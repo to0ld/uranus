@@ -27,7 +27,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 		}
 		// 处理主键
 		FieldModel pk = model.findPK();
-		if (pk != null && (Domain.PK.equals(pk.type))) {// 如果是临时表，无主键，那就用reffield吧
+		if (pk != null && (Domain.Pk.equals(pk.type))) {// 如果是临时表，无主键，那就用reffield吧
 			ret += " ,constraint PK_" + tableCode + " primary key (" + pk.code + ") ";
 		}
 		ret += ")";
@@ -70,9 +70,9 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		} else if (Domain.PK.equals(field.type)) {
+		} else if (Domain.Pk.equals(field.type)) {
 //			ret += " varchar(" + field.length + ")";
-			ret += " varchar(" + Domain.PK.getLength() + ")";
+			ret += " varchar(" + Domain.Pk.getLength() + ")";
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}

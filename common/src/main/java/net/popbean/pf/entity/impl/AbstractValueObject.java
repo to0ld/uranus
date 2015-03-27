@@ -23,7 +23,7 @@ public class AbstractValueObject implements IValueObject {
 	//
 	public static int STAT_ALL = 999;//全部
 	//
-	@Field(domain = Domain.PK, name = "主键")
+	@Field(domain = Domain.Pk, name = "主键")
 	public String id;
 	@Field(name = "创建者", domain = Domain.Ref)
 	public String account_crt_ref;

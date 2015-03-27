@@ -212,6 +212,16 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 			List<FieldModel> field_list = em.field_list;
 			// 进行重名的保护
 			//不是同一个资源，叫同一个code，不行
+			//如果第一个不存在呢。。。得先来
+			boolean flag = _commondao.isExists("pb_pf_entity", null);
+			if(!flag){
+				syncDbStruct(EntityModel.class, session);
+			}
+			flag = _commondao.isExists("pb_pf_field", null);
+			if(!flag){
+				syncDbStruct(FieldModel.class, session);
+			}
+			//
 			StringBuilder sql = new StringBuilder(" select 1 from pb_pf_entity where code=${code} $[and clazz!=${clazz}] $[and id!=${id}]");
 			JSONObject param = JOHelper.vo2jo(em);
 			_commondao.assertTrue(sql, param, "不能重名，已经存在entity_code=" + em.code);
@@ -342,10 +352,10 @@ public class EntityStructBusinessServiceImpl extends AbstractBusinessService imp
 				EntityModel tm = EntityModelHelper.build((Class<IValueObject>)Class.forName(clazz));
 				tm_list.add(tm);
 			}
-			syncEntityModel(tm_list, session);
 			if(isSyncDb){
 				syncDbStructByEntityModel(tm_list, session);
 			}
+			syncEntityModel(tm_list, session);
 		} catch (Exception e) {
 			processError(e);
 		}

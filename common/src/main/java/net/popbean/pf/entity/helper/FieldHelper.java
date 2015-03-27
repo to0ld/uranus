@@ -14,8 +14,8 @@ public class FieldHelper {
 		FieldModel ret = new FieldModel();
 		ret.code = code;
 		ret.name = name;
-		ret.type = Domain.PK;
-		ret.length = Domain.PK.getLength();
+		ret.type = Domain.Pk;
+		ret.length = Domain.Pk.getLength();
 		return ret;
 	}
 	public static FieldModel ref(String code, String name) {

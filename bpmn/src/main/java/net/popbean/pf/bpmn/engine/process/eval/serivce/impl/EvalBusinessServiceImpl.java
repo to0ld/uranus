@@ -137,7 +137,7 @@ public class EvalBusinessServiceImpl extends AbstractBusinessService {
 							work_item.put(code,pk_dept);
 						}
 					}else{
-						List<JSONObject> tmp = dsService.fetchPagingRangeList(rangeset, JO.gen("FILTER",bill_field_list.get(i+1),"LOGIN_PK_ORG","sankuai"), false, null, null);
+						List<JSONObject> tmp = dsService.fetchPagingRangeList(rangeset, JO.gen("FILTER",bill_field_list.get(i+1),"LOGIN_PK_ORG","popbean"), false, null, null);
 						if(CollectionUtils.isEmpty(tmp)){
 							ErrorBuilder.createSys().msg("没有找到"+key+"="+bill_field_list.get(i+1)+"(rangeset="+rangeset+")的对应值域").execute();
 						}

@@ -114,7 +114,7 @@ public class DatasetServiceTestCase extends AbstractTestNGSpringContextTests {
 		 * 
 		 */
 		private static final long serialVersionUID = 3340290832096001736L;
-		@Field(domain = Domain.PK)
+		@Field(domain = Domain.Pk)
 		public String custmer_id;
 		@Field
 		public String custmer_code;

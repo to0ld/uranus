@@ -218,7 +218,7 @@ public class EntityWrapperHelper implements Opcodes{
 	 * @return
 	 */
 	private static String getDomainClassVendor(FieldModel model){
-		if(model.type.equals(Domain.Code) || model.type.equals(Domain.Memo) || model.type.equals(Domain.PK) || model.type.equals(Domain.Seriescode)){
+		if(model.type.equals(Domain.Code) || model.type.equals(Domain.Memo) || model.type.equals(Domain.Pk) || model.type.equals(Domain.Seriescode)){
 			return "java/lang/String";
 		}else if(model.type.equals(Domain.Stat)){//支持stat field有两种pojo field类
 			return model.clazz.replaceAll("\\.", "/");

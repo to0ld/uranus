@@ -1,13 +1,16 @@
 package net.popbean.pf.bill.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import net.popbean.pf.attachement.vo.RltAttVO;
 import net.popbean.pf.bill.helpers.BillConst;
+import net.popbean.pf.bill.helpers.BillModelHelper;
 import net.popbean.pf.bill.service.BillDataBusinessService;
 import net.popbean.pf.bill.service.BillDataExtendBusinessService;
 import net.popbean.pf.bill.service.BillModelBusinessService;
@@ -32,6 +35,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -50,6 +55,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 	@Qualifier("service/pf/entity")
 	EntityBusinessService<String> entityService; 
 	//
+	@CacheEvict(value="service/bill/data",key="#code+'-'+#stage+'-'+#data['id']")
 	@Override
 	public String save(String code, String stage, boolean forceValid, JSONObject data, SecuritySession session) throws BusinessError {
 		if (data == null || data.size() == 0) {
@@ -67,9 +73,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			//
 			BillModel model = bmService.find(code, stage, false, session);
 			BillDataExtendBusinessService ext = getExt(model);
-//			String pkEntity = findPKEntity(model, session);
 			EntityModel em = entityService.findModel(model.main.code);
-//			TableMeta tableMeta = entityService.findTableMeta(pkEntity);
 			String pkField = em.findPK().code;//可能会有没主键的，这么写不好
 			String pkValue = data.getString(pkField);
 			boolean isAdd = false;
@@ -80,8 +84,6 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			}
 			// FIXME: 需要把子集的引用值全改为pkValue，目前是在entityService里处理的
 			if (ext != null) {
-//				model.set("PKField", pkField);
-//				model.set("TableCode", tableMeta.getTableCode());
 				ext.validForSave(model, data, isAdd, session);
 				// 允许使用返回值，但是如果为null就不使用
 				JSONObject newData = ext.beforeSave(model, data, isAdd, session);
@@ -91,8 +93,75 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			}
 			String dataId = _commondao.save(em, data, true, false, null);
 //			String dataId = entityService.saveData(data, false);//(data, pkEntity, true, session);
+			//
+			List<BillEntityModel> slaves = model.slaves;
+			Map<String,BillEntityModel> slave_bus = new HashMap<>();
+			for(BillEntityModel bem:slaves){
+				slave_bus.put(bem.code, bem);
+			}
+			//
+			List<RelationModel> rlt_list = entityService.fetchRelation(em.code);
+			if(isAdd){//新增
+				//分为直连和桥接两种(桥接中分为强引用，弱引用两种)
+
+			}else{//修改
+				//先删除数据再说
+				for(RelationModel rm:rlt_list){
+					BillEntityModel bem = slave_bus.get(rm.code);
+					if(bem == null){//没有这个关系就撤吧
+						continue;
+					}
+					if(RelationModel.TYPE_BRIDGE.equals(rm.type)){
+						if(!BillEntityModel.REF_TYPE_WEAK.equals(bem.ref_type)){
+							//删除子表数据
+							//delete from slave where id in (select xx from bridge where main_id=${id})
+							StringBuilder delete_slave = new StringBuilder(" delete from "+rm.entity_code_slave+" where "+bem.findPk().code+" in ( select "+rm.id_key_slave+" from "+rm.code+"   ");
+							delete_slave.append(" where "+rm.id_key_main+"=${id} ) ");
+							_commondao.executeChange(delete_slave,JO.gen("id",dataId));
+						}
+						//删除桥数据
+						StringBuilder delete_bridge = new StringBuilder("delete from "+bem.code+" where "+rm.id_key_main+"=${id}");
+						_commondao.executeChange(delete_bridge,JO.gen("id",dataId));
+					}else{//如果不是桥接就直接删除
+						StringBuilder sql = new StringBuilder(" delete from "+rm.code+" where "+rm.id_key_slave+"=${id} ");
+						_commondao.executeChange(sql,JO.gen("id",dataId));
+					}
+				}
+			}
+			//写入子集信息
+			Map<String,RelationModel> rlt_bus = new HashMap<>();
+			for(RelationModel rm:rlt_list){
+				rlt_bus.put(rm.entity_code_slave, rm);
+			}
+			for(BillEntityModel bem:slaves){
+				if("rlt_attachement".equals(bem.code)){//附件单独处理
+					continue;
+				}
+				RelationModel rm = rlt_bus.get(bem.code);
+				EntityModel tmp = BillModelHelper.convert(bem,rm);
+				List<JSONObject> list = JOHelper.ja2list(data.getJSONArray(bem.code));
+				//
+				String pk_field = bem.findPk().code;
+				for(JSONObject curror:list){//补齐主表的主键
+					curror.put(rm.id_key_slave, dataId);//补齐外键的主键，就算不用，也不误事
+					curror.put(pk_field, _commondao.genId());//补齐主键
+				}
+				_commondao.batchInsertJO(tmp, list, null);
+				//
+				if(RelationModel.TYPE_BRIDGE.equals(rm.type)){//桥接需要补一把数据
+					List<JSONObject> bridge_list = new ArrayList<>();
+					for(JSONObject curror:list){//补齐主表的主键
+						JSONObject jo = JO.gen(rm.id_key_main,dataId,rm.id_key_slave,curror.getString(pk_field));
+						bridge_list.add(jo);
+					}
+					_commondao.batchInsertJO(tmp, bridge_list, null);
+				}else{//非桥接模式，直接写入(已经补齐外键)
+				}
+//				_commondao.batchInsertJO(tmp, list, null);
+			}
+			//
 			@SuppressWarnings("unchecked")
-			List<String> pkAtts = (List<String>) data.get("RLT_BIZ_ATT");
+			List<String> pkAtts = (List<String>) data.get("rlt_attachement");
 			if (pkAtts != null) {
 				List<RltAttVO> atts = new ArrayList<>();
 				for (String pk : pkAtts) {
@@ -111,7 +180,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 					_commondao.batchInsert(atts);
 				} catch (Exception e) {
 					// what ?
-					ErrorBuilder.createSys().msg("无法保存附件，请联系pig（向rlt_attachement表中保存数据时出错）" + e).execute();
+					ErrorBuilder.createSys().msg("无法保存附件，请联系（向rlt_attachement表中保存数据时出错）" + e).execute();
 				}
 			}
 			if (ext != null) {
@@ -146,27 +215,31 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			}
 			BillModel model = bmService.find(code, null, false, env);
 			List<String> deleted = new ArrayList<String>();
-			StringBuilder sql = new StringBuilder("update "+model.main.code+" set status=-5 where id=${id}");
 			for (String dataId : pk_list) {
 				// FIXME: 真的要查一遍数据，以获取ext?
-				JSONObject jo = JO.gen("id",dataId);
-				BillDataExtendBusinessService ext = getExt(model);
-				if (ext != null) {
-					ext.validForDelete(model, jo, env);
-					ext.beforeDelete(model, jo, env);
-				}
-				_commondao.executeChange(sql, jo);
-				if (ext != null) {
-					ext.afterDelete(model, jo, env);
-				}
+				delete(model,dataId,env);
 				deleted.add(dataId);
-				log(BillConst.OpLog.Data.DEL,JSON.toJSONString(jo), env);//删除之前不存一份，有点可惜哈，否则还能做一个美妙的还原
 			}
 			
 		} catch (Exception e) {
 			processError(e);
 		}
 		return ;
+	}
+	@CacheEvict(value="service/bill/data",key="#code+'-'+#stage+'-'+#pk")
+	private void delete(BillModel model,String pk,SecuritySession session)throws Exception{
+		StringBuilder sql = new StringBuilder("update "+model.main.code+" set status=-5 where id=${id}");
+		JSONObject jo = JO.gen("id",pk);
+		BillDataExtendBusinessService ext = getExt(model);
+		if (ext != null) {
+			ext.validForDelete(model, jo, session);
+			ext.beforeDelete(model, jo, session);
+		}
+		_commondao.executeChange(sql, jo);
+		if (ext != null) {
+			ext.afterDelete(model, jo, session);
+		}
+		log(BillConst.OpLog.Data.DEL,JSON.toJSONString(jo), session);//删除之前不存一份，有点可惜哈，否则还能做一个美妙的还原
 	}
 
 	@Override
@@ -225,6 +298,71 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			}
 			model = bmService.findById(code,data_id,false,client);//需要去解析
 			
+			if(ext!=null && ext.enableCustomFind()){//如果启用了自定义的查询，那就自己来吧
+				billData = ext.findBillData(model, data_id, includeSlave, client);
+				billData.put("X-MODEL", model);
+				return billData;
+			}
+			billData.put("X-MODEL", model);
+			if (!includeSlave) {
+				return billData;
+			}
+			
+			List<BillEntityModel> slaves = model.slaves;
+			if (CollectionUtils.isEmpty(slaves)) {
+				return billData;
+			}
+			for (BillEntityModel slave : slaves) {
+				String slaveCode = slave.code;
+				if (slaveCode == null) {
+					slaveCode = slave.code;
+				}
+				if ("RLT_ATTACHEMENT".equalsIgnoreCase(slaveCode)) {
+					StringBuilder sql = new StringBuilder();
+					sql.append("select a.name, a.size, a.id as uuid from pb_bd_attachement a");
+					sql.append(" left join rlt_attachement b on (a.id = b.attachement_id) ");
+					sql.append(" where b.ref = ${PK}");
+					try {
+						List<JSONObject> rlt_att_list = _commondao.query(sql, JO.gen("PK", data_id));
+						billData.put(slaveCode, rlt_att_list);
+					} catch (Exception e) {
+					}
+					continue;
+				}
+				if (ext != null) {
+					// 子集自定义数据扩展
+					boolean flag = ext.enableSlaveDataCustomFetch(slaveCode); 
+					if(flag){
+						List<JSONObject> slaveData = ext.fetchSlave(model, data_id, slaveCode, client);
+						billData.put(slaveCode, slaveData);
+						continue;
+					}else{//不用自定义就用默认的
+					}
+				}
+			}
+			for(BillEntityModel slave:slaves){
+				List<JSONObject> slave_data = fetchSlaveData(code, model.stage, data_id, slave.code, client);
+				billData.put(slave.code,slave_data);
+			}
+			return billData;
+		} catch (Exception e) {
+			processError(e);
+		}
+		return null;
+	}
+	public JSONObject findBillData(String code,String stage,String data_id, Boolean includeSlave, SecuritySession client) throws BusinessError {
+		try {
+			// 获取默认模型
+			BillModel model = bmService.find(code, null, false, client);
+			
+			// 获取实体
+			JSONObject billData = findMainData(code, data_id, client);
+			if(billData == null){
+				ErrorBuilder.createSys().msg("单据"+code+"中找不到id="+data_id+"的数据").execute();
+			}
+			model = bmService.findById(code,data_id,false,client);//需要去解析
+			
+			BillDataExtendBusinessService ext = getExt(model);
 			if(ext!=null && ext.enableCustomFind()){//如果启用了自定义的查询，那就自己来吧
 				billData = ext.findBillData(model, data_id, includeSlave, client);
 				billData.put("X-MODEL", model);

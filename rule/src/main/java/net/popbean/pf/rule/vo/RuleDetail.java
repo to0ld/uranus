@@ -21,7 +21,7 @@ public class RuleDetail extends AbstractValueObject {
 	//
 	@Field(domain = Domain.Ref)
 	public String rule_ref;
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String rule_deail_id;
 	@Field(domain = Domain.Ref)
 	public String cond_ref;

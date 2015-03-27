@@ -17,7 +17,7 @@ public class RuleParam extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 7093324741650749171L;
 	//
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String rule_param_id;//建议采用company:code_rule:code_param 
 	@Field(domain=Domain.Ref)
 	public String rule_ref;//FIXME left join 这事今后是不是就不好弄了？无法避免多表联查

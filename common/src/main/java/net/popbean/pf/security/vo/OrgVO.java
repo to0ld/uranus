@@ -11,7 +11,7 @@ public class OrgVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 5462198923420969124L;
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String id;
 	@Field
 	public String code;

@@ -19,7 +19,7 @@ public class RltOrgAccount extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 1099916488760376741L;
 	//
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String id;
 	@Field(domain = Domain.Ref)
 	public String org_ref;

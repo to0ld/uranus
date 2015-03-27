@@ -17,7 +17,7 @@ public class AppVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -2692355483300031372L;
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String id;
 	@Field(name = "编码")
 	public String code;

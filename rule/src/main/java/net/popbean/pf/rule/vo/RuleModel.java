@@ -25,7 +25,7 @@ public class RuleModel extends AbstractValueObject {
 	public static final int RESULT_JO = 3;
 	public static final int RESULT_LIST = 5;
 	//
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String rule_id;
 	@Field
 	public String rule_code;

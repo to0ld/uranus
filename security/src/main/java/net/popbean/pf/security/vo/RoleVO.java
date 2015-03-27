@@ -16,7 +16,7 @@ public class RoleVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 3918195315421352204L;
-	@Field(name="角色主键",domain=Domain.PK)
+	@Field(name="角色主键",domain=Domain.Pk)
 	public String pk_role;
 	public String code_role;
 	public String name_role;

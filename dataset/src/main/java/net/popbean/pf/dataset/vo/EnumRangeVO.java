@@ -19,7 +19,7 @@ public class EnumRangeVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 8328762475814960817L;
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String ds_range_id;
 	@Field
 	public String range_code;

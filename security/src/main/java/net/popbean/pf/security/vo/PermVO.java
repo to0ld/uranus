@@ -22,7 +22,7 @@ public class PermVO extends AbstractValueObject {
 	public static final int TYPE_NODE = 5;
 	public static final int TYPE_ACT = 7;
 	//
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String id;
 	@Field
 	public String code;

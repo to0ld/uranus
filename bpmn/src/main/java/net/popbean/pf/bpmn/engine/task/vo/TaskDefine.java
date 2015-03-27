@@ -13,7 +13,7 @@ public class TaskDefine extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 180974509656528478L;
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String id;
 	@Field(domain=Domain.Ref)
 	public String task_ref;//proc_def_code:task_code可好

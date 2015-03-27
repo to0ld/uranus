@@ -11,6 +11,6 @@ public class BatchVO implements IValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 1396210999336946036L;
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String id;
 }

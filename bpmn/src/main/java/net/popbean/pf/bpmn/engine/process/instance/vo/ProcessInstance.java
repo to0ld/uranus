@@ -24,7 +24,7 @@ public class ProcessInstance extends AbstractValueObject {
 	public static final int STAT_FINISH = 5;//完成状态
 	public static final int STAT_REJECT  = -3;//驳回
 	//
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String id;
 	@Field
 	public String proc_inst_id;

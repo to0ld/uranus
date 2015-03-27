@@ -22,7 +22,7 @@ public class AccountVO implements IValueObject{
 	 */
 	private static final long serialVersionUID = 8757986141529528707L;
 	//
-	@Field(name="主键",domain=Domain.PK)
+	@Field(name="主键",domain=Domain.Pk)
 	public String pk_account;
 	
 	@Field(name="编码",domain=Domain.Code)

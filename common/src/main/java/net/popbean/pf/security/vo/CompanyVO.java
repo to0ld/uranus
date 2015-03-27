@@ -17,7 +17,7 @@ public class CompanyVO implements IValueObject {
 	 */
 	private static final long serialVersionUID = 4168320084899460389L;
 	//
-	@Field(name="企业主键",domain=Domain.PK)
+	@Field(name="企业主键",domain=Domain.Pk)
 	public String id;
 	@Field(name="企业编码",domain=Domain.Code)
 	public String code;

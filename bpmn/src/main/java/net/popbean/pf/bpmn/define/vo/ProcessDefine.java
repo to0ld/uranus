@@ -13,7 +13,7 @@ public class ProcessDefine extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 8311392492189642542L;
 	//
-	@Field(domain = Domain.PK)
+	@Field(domain = Domain.Pk)
 	public String id;
 	@Field
 	public String code;

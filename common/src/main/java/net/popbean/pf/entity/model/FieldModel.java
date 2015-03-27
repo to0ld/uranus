@@ -43,13 +43,15 @@ public class FieldModel extends AbstractValueObject {
 	public String def_value;
 	//
 	@Field
-	public String clazz;//所用的类
+	public String clazz;//属性所用的类
 	//来源表编码
 	@Field
 	public String relation_code;//引用表编码
 	//来源表的引用字段a.pk到了b可能就是叫fk了
 	@Field
 	public String id_key_relation;//引用表唯一标示
+	@Field
+	public String source_class;//引用源头的类
 	public RelationType rt = RelationType.None;
 	//
 	/**
@@ -60,6 +62,6 @@ public class FieldModel extends AbstractValueObject {
 		return (required == REQ_YES);
 	}
 	public boolean isPk(){
-		return Domain.PK.equals(type);
+		return Domain.Pk.equals(type);
 	}
 }

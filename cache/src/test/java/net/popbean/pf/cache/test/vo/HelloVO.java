@@ -16,6 +16,6 @@ public class HelloVO implements IValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 8235894953811866614L;
-	@Field(domain=Domain.PK)
+	@Field(domain=Domain.Pk)
 	public String pk_hello;
 }

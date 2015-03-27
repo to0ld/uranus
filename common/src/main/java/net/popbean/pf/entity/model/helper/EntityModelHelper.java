@@ -18,6 +18,7 @@ import net.popbean.pf.entity.model.EntityType;
 import net.popbean.pf.entity.model.FieldModel;
 import net.popbean.pf.entity.model.RelationModel;
 import net.popbean.pf.exception.ErrorBuilder;
+import net.popbean.pf.id.helper.IdGenHelper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +48,7 @@ public class EntityModelHelper {
 			ErrorBuilder.createSys().msg("传入的类("+clazz+")没有定义@Entity，无法提取实体模型信息").execute();
 		}
 		model = new EntityModel();
+		model.clazz = clazz.getName();
 		model.code = entity.code();
 		if(StringUtils.isBlank(entity.name())){
 			model.name = entity.code();
@@ -70,7 +72,7 @@ public class EntityModelHelper {
 			return null;
 		}
 		for(FieldModel fm:field_list){
-			if(Domain.PK.equals(fm.type)){
+			if(Domain.Pk.equals(fm.type)){
 				return fm;
 			}
 		}
@@ -128,22 +130,22 @@ public class EntityModelHelper {
 			if(loop !=2){//如果需要更明晰的，就改逻辑吧
 				ErrorBuilder.createSys().msg("作为桥接表得有master&slave，少一个不行多一个也不行").execute();
 			}
+			rm.id = IdGenHelper.genID(rm.entity_code_main, rm.entity_code_slave,rm.id_key_slave);//
 			ret.add(rm);
 			return ret;
 		}else{//非桥接表，找ref
 			//只要找到一个就好
 			for(FieldModel fm:entity.field_list){
-				if(Domain.Ref.equals(fm.type) && !RelationType.None.equals(fm.rt)){//ref类型 且 为指定关系
+				if(Domain.Ref.equals(fm.type) && !StringUtils.isBlank(fm.relation_code)){//ref类型 且 为指定关系
 					RelationModel em = new RelationModel();
 					//
 					em.code = entity.code;
-					if(RelationType.Master.equals(fm.rt)){
-						em.id_key_main = fm.code;
-						em.entity_code_main = fm.relation_code;
-					}else if(RelationType.Slave.equals(fm.rt)){
-						em.id_key_slave = fm.code;
-						em.entity_code_slave = fm.relation_code;
-					}
+					//
+					em.entity_code_main = fm.relation_code;
+					em.id_key_main = fm.id_key_relation;
+					em.entity_code_slave = entity.code;
+					em.id_key_slave = fm.code;
+					em.id = IdGenHelper.genID(em.entity_code_main, em.entity_code_slave,em.id_key_slave);
 					ret.add(em);
 				}
 			}
@@ -192,7 +194,7 @@ public class EntityModelHelper {
 			if(size == 1000){//pk
 				field.type = Domain.Memo;
 			}else if(size == 60){// modify by yaolei02
-				field.type = Domain.PK;
+				field.type = Domain.Pk;
 			}else if(size == 120){
 				field.type = Domain.Code;
 			}
@@ -221,7 +223,7 @@ public class EntityModelHelper {
 		}else if(type == Types.TIMESTAMP){
 			field.type = Domain.TimeStamp;
 		}else if(type == Types.CHAR){
-			field.type = Domain.PK;
+			field.type = Domain.Pk;
 		}else if(type == Types.SMALLINT || type == Types.TINYINT){
 			field.type = Domain.Stat;
 			if(!StringUtils.isBlank(def)){
@@ -272,6 +274,7 @@ public class EntityModelHelper {
 				EntityModel rlt_model = build(a.relation());
 				model.relation_code = rlt_model.code;
 				model.id_key_relation = rlt_model.findPK().code;
+				model.source_class = rlt_model.clazz;
 			}
 		}
 		return model;

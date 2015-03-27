@@ -8,8 +8,8 @@ import net.popbean.pf.cache.service.CacheManagementBusinessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.cache.RedisCache;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +22,7 @@ public class CacheManagementBusinessServiceRedisImpl extends AbstractBusinessSer
 	//
 	@Autowired
 	@Qualifier("cacheManager")
-	RedisCacheManager cacheManager;
+	CacheManager cacheManager;
 	//
 	/**
 	 * 有cache就一定要提供人工evict的工具

@@ -58,6 +58,7 @@ public abstract class AbstractJob implements Job {
 	 */
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
+		/**
 		JobDataMap dataMap = null;
 		ScheduleBusinessService smService = null;
 		JobKey key = context.getJobDetail().getKey();
@@ -123,6 +124,6 @@ public abstract class AbstractJob implements Job {
 			log.error(e);
 			throw new JobExecutionException("JOB_EXCUTE_ERROR", e);
 		} finally {
-		}
+		}**/
 	}
 }

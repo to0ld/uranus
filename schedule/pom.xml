@@ -9,14 +9,14 @@
 	<artifactId>schedule</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>net.popbean</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.popbean</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>config</artifactId>
-			<version>1.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>

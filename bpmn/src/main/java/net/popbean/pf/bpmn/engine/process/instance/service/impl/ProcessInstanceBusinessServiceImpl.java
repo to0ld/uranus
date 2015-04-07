@@ -104,8 +104,8 @@ public class ProcessInstanceBusinessServiceImpl extends AbstractBusinessService 
 			ProcessDefine proc_def = _commondao.find(sql, JO.gen("PD_KEY", pd_key),ProcessDefine.class, "没有找到注册配置(" + pd_key + ")");
 			String pk_key = proc_def.code.toUpperCase();//统一使用大写
 			//找到所有的必须的key用于判断
-			String proc_def_ref = VOHelper.buildRef(proc_def.id, proc_def.name);
-			sql = new StringBuilder(" select code,type,rangeset,pk_pd,name from pb_pf_procdef_param where proc_def_ref=${PK_PD} ");
+			String proc_def_ref = proc_def.id;
+			sql = new StringBuilder(" select code,type,rangeset,pk_pd,name from pb_pf_procdef_param where proc_def_id=${PK_PD} ");
 			List<JSONObject> field_list = _commondao.query(sql, JO.gen("PK_PD",proc_def_ref));
 			for(JSONObject field:field_list){//校验一下是否有必须，但是workitem又没有的属性
 				if(StringUtils.isBlank(workitem.getString(field.getString("CODE")))){

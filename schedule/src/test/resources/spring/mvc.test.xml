@@ -109,5 +109,5 @@
 	</bean>
 	<context:property-placeholder
 		ignore-unresolvable="true" location="classpath:pb.dev.data.properties" />
-		<import resource="classpath:spring/mvc.secukrity.xml"/>
+		<import resource="classpath:spring/mvc.security.xml"/>
 </beans>

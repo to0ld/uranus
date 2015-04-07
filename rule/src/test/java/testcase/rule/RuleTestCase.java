@@ -57,9 +57,9 @@ public class RuleTestCase extends AbstractTestNGSpringContextTests{
 			commonService.executeChange(sql, session);
 			//写入规则
 			RuleModel model = new RuleModel();
-			model.rule_code = "rule_test";
-			model.rule_name = "测试规则";
-			model.rule_memo = "只是简单的用于测试，而已";
+			model.code = "rule_test";
+			model.name = "测试规则";
+			model.memo = "只是简单的用于测试，而已";
 			
 			//  ['key1'] > 100 & ['key2'] == 'hunan' then return://istat=1
 			// ['key2']
@@ -69,12 +69,12 @@ public class RuleTestCase extends AbstractTestNGSpringContextTests{
 			RuleDetail detail = new RuleDetail();
 			detail.cond_exp = "['key1'] > 100 && ['key2'] == 'beijing'";
 			detail.exec_exp = "return://istat=1";
-			detail.rule_ref = VOHelper.buildRef(rule_id, model.rule_name);
+			detail.rule_id = rule_id;
 			list.add(detail);
 			detail = new RuleDetail();
 			detail.cond_exp = "['key1'] <= 100 ";
 			detail.exec_exp = "return://istat=0";
-			detail.rule_ref = VOHelper.buildRef(rule_id, model.rule_name);
+			detail.rule_id = rule_id;
 			list.add(detail);
 			commonService.batchInsert(list, null);
 			//拼凑模拟数据

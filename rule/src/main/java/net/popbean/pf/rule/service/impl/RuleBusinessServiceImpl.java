@@ -81,10 +81,10 @@ public class RuleBusinessServiceImpl extends AbstractBusinessService implements 
 	private List<RuleDetail> fetchRuleDetailList(String rule_code)throws BusinessError{
 		try {
 			//FIXME 需要启用Cache在获取model的时候会更快捷
-			StringBuilder sql = new StringBuilder("select b.*,c.range_code,c.range_name,c.code_value,c.memo ");
-			sql.append(" from pb_pf_rule a left join pb_pf_rule_detail b on (concat(a.rule_id,'"+EntityModelHelper.REF_SPLIT+"',rule_name)=b.rule_ref) ");
-			sql.append(" left join pb_pf_ds_range c on (b.cond_ref = concat(ds_range_id,range_name)) ");
-			sql.append(" where a.rule_code=${rule_code} ");
+			StringBuilder sql = new StringBuilder("select b.*,c.code range_code,c.name range_name,c.code_value,c.memo ");
+			sql.append(" from pb_pf_rule a left join pb_pf_rule_detail b on (a.id=b.rule_id) ");
+			sql.append(" left join pb_pf_ds_range c on (b.cond_id = c.id) ");
+			sql.append(" where a.code=${rule_code} ");
 			sql.append(" order by b.inum ");
 			JSONObject param = new JSONObject();
 			param.put("rule_code",rule_code);
@@ -112,8 +112,8 @@ public class RuleBusinessServiceImpl extends AbstractBusinessService implements 
 			for(RuleDetail detail:rule_detail_list){
 				current_detail = detail;
 				cond_exp = "";//确认清空
-				if(!StringUtils.isBlank(detail.cond_ref)){//如果存在引用的，则优先使用引用的
-					cond_exp = detail.detail_memo;
+				if(!StringUtils.isBlank(detail.cond_id)){//如果存在引用的，则优先使用引用的
+					cond_exp = detail.memo;
 					p++;
 				}
 				if(!StringUtils.isBlank(detail.cond_exp)){

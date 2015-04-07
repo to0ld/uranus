@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.popbean.pf.business.service.impl.AbstractBusinessService;
 import net.popbean.pf.entity.helper.JO;
-import net.popbean.pf.entity.model.helper.EntityModelHelper;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.security.helper.OpConst;
@@ -96,20 +95,20 @@ public class AuthenticateBusinessServiceImpl extends AbstractBusinessService imp
 			JSONObject role_inst = JO.gen(
 				"PK_ACCOUNT", account_inst.id,
 				"ISTAT", AccountVO.STAT_NONE,
-				"COMPANY_CRT_REF", account_inst.company_crt_ref
+				"COMPANY_CRT_ID", account_inst.company_crt_id
 			);
 			//获得该用户关联的有效角色
-			sql = new StringBuilder("select a.* from rlt_role_account a left join pb_bd_role b on (a.pk_subject=b.pk_role) where a.pk_resource=${PK_ACCOUNT} and b.istat=${ISTAT}");
+			sql = new StringBuilder("select a.* from rlt_role_account a left join pb_bd_role b on (a.role_id=b.id) where a.account_id=${PK_ACCOUNT} and b.istat=${ISTAT}");
 			List<RoleVO> roleList = _commondao.query(sql, role_inst,RoleVO.class);
 			//
-			sql = new StringBuilder(" select a.* from pb_bd_company a left join pb_bd_account b on (concat(a.id,'"+EntityModelHelper.REF_SPLIT+"',a.name)=b.company_crt_ref) where 1=1 and b.id=${PK_ACCOUNT}");
+			sql = new StringBuilder(" select a.* from pb_bd_company a left join pb_bd_account b on (a.id=b.company_crt_id) where 1=1 and b.id=${PK_ACCOUNT}");
 			CompanyVO company = _commondao.find(sql, JO.gen(), CompanyVO.class, null);
 
 			//
 			
 			StringBuilder sql1 = new StringBuilder(" select b.PK_DEPT,b.DEPT_CODE,b.DEPT_NAME,b.MEMO,b.CRT_TS,b.ISTAT,b.SERIESCODE ");
-			sql1.append(" from RLT_ACCOUNT_DEPT a left join PB_BD_ORG b on ( a.PK_DEPT = b.PK_DEPT ) ");
-			sql1.append(" where a.PK_ACCOUNT = ${PK_ACCOUNT} and b.ISTAT= 3 order by itype ");
+			sql1.append(" from rlt_org_account a left join PB_BD_ORG b on ( a.org_id = b.id ) ");
+			sql1.append(" where a.account_id = ${PK_ACCOUNT} and b.ISTAT= 3 order by itype ");
 			OrgVO org = _commondao.find(sql1, JO.gen("PK_ACCOUNT",account_inst.id),OrgVO.class,null);
 			
 			//

@@ -54,9 +54,9 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			//FIXME 暂时不考虑istat=0，封存的情况
 			//需要识别一下是排除还是咋
 			String rlt_md_code = rm_inst.relation_code;
-			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_ref=${ref_subject} ");
+			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_id=${ref_subject} ");
 			List<JSONObject> rlt_list = _commondao.query(sql, JO.gen("PK_SUBJECT",pk_subject));//得到授权数据
-			String pk_resource_code = rm_inst.resource_ref;//受控资源主键
+			String pk_resource_code = rm_inst.resource_id;//受控资源主键
 			DataSetModel ds_inst = dsService.findModel(pk_resource_code, new JSONObject(), true,true,null,client);
 			List<JSONObject> range_list = ds_inst.data;
 			//FXIME 需要注意的是，要把memo给加上，要不然满足不了财务的要求：不同的部门看到的同一费用科目，备注不同
@@ -86,9 +86,9 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			//FIXME 暂时不考虑istat=0，封存的情况
 			//需要识别一下是排除还是咋
 			String rlt_md_code = rm_inst.relation_code;
-			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_ref=${ref_subject} ");
+			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where subject_id=${ref_subject} ");
 			List<JSONObject> rlt_list = _commondao.query(sql, JO.gen("PK_SUBJECT",pk_subject));//得到授权数据
-			String pk_resource_code = rm_inst.resource_ref;//受控资源主键
+			String pk_resource_code = rm_inst.resource_id;//受控资源主键
 			DataSetModel ds_model = dsService.findModel(pk_resource_code, param, true,true,null,client);
 			List<JSONObject> range_list = ds_model.data;
 			//FXIME 需要注意的是，要把memo给加上，要不然满足不了财务的要求：不同的部门看到的同一费用科目，备注不同
@@ -265,7 +265,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			String rlt_md_code = rm_inst.relation_code;
 			StringBuilder sql = new StringBuilder(" select a.* from "+rlt_md_code+" a where 1=1 ");
 			Integer itype = rm_inst.type;
-			String pk_resource_code = rm_inst.resource_ref;
+			String pk_resource_code = rm_inst.resource_id;
 			DataSetModel ds_inst = dsService.findModel(pk_resource_code, param,true,true,null, client);
 			List<JSONObject> range_list = ds_inst.data;
 			
@@ -316,8 +316,8 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			StringBuilder sql = new StringBuilder(" select a.* from pb_pf_rm a where code=${code_rm} ");
 			ResourceMappingModel rm_inst = _commondao.find(sql, param, ResourceMappingModel.class, "没有找到rm_code="+rm_code+"的资源映射配置");
 			
-			String pk_subject = VOHelper.getPKFromRef(rm_inst.subject_ref);//假定这个是组合pk_ds@#@ds_name
-			String pk_resource = VOHelper.getPKFromRef(rm_inst.resource_ref);
+			String pk_subject = VOHelper.getPKFromRef(rm_inst.subject_id);//假定这个是组合pk_ds@#@ds_name
+			String pk_resource = VOHelper.getPKFromRef(rm_inst.resource_id);
 			//FIXME 很显然，我需要的是数据，不是显示格式;是否有权限一说呢？
 			
 			DataSetModel subject_model = dsService.findModel(pk_subject, JO.gen(), false, false, null, client);
@@ -332,7 +332,7 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 	}
 	private ResourceMappingModel findBaseInfo(String rm_unique)throws BusinessError{
 		try {
-			StringBuilder sql = new StringBuilder(" select a.relation_code,a.resource_ref from pb_pf_rm a where a.code=${code} ");
+			StringBuilder sql = new StringBuilder(" select a.relation_code,a.resource_id from pb_pf_rm a where a.code=${code} ");
 			ResourceMappingModel rm_inst = _commondao.find(sql, JO.gen("code",rm_unique),ResourceMappingModel.class,"没有找到rm_code="+rm_unique+"的资源映射");
 			return rm_inst;
 		} catch (Exception e) {
@@ -354,9 +354,9 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			ResourceMappingModel rm_inst = findBaseInfo(rm_code);
 			String rlt_md_code = rm_inst.relation_code;
 			//清除一下已有的关系
-			StringBuilder sql = new StringBuilder("select subject_ref,resource_ref from "+rlt_md_code+" where subject_ref like ${subject_ref} and resource_ref ");
-			sql.append(DaoHelper.Sql.in("resource_ref", pk_resource_list.size()));
-			JSONObject p = DaoHelper.Sql.in(JO.gen("subject_ref",pk_subject), pk_resource_list, "resource_ref");
+			StringBuilder sql = new StringBuilder("select subject_id,resource_id from "+rlt_md_code+" where subject_id like ${subject_id} and resource_id ");
+			sql.append(DaoHelper.Sql.in("resource_id", pk_resource_list.size()));
+			JSONObject p = DaoHelper.Sql.in(JO.gen("subject_id",pk_subject), pk_resource_list, "resource_id");
 			List<JSONObject> sub_list = _commondao.query(sql, p);
 			//
 			Map<String,String> bus = new HashMap<>();
@@ -369,16 +369,16 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 			for(String v:pk_resource_list){
 				JSONObject vo = new JSONObject();
 				if(!bus.containsKey(v)){//已经存在的，就不改了
-					vo.put("subject_ref",pk_subject);
-					vo.put("resource_ref",v);//其实为空也是不行的
+					vo.put("subject_id",pk_subject);
+					vo.put("resource_id",v);//其实为空也是不行的
 					vo.put("status",3);
 					vo.put("serial", 0);
 					data.add(vo);					
 				}
 			}
 			EntityModel model = ResourceMappingHelper.buildRelationEntityModel(rlt_md_code);
-			FieldModel pk_resource = FieldHelper.ref("resource_ref","资源主键");
-			FieldModel pk_subject_field = FieldHelper.ref("subject_ref","主体主键");
+			FieldModel pk_resource = FieldHelper.ref("resource_id","资源主键");
+			FieldModel pk_subject_field = FieldHelper.ref("subject_id","主体主键");
 			_commondao.batchInsertJO(model, data,new FieldModel[]{pk_subject_field,pk_resource});//要想省事，可以用replace，pk_subject:pk_resource
 		} catch (Exception e) {
 			processError(e);
@@ -550,13 +550,13 @@ public class ResourceMappingBusinessServiceImpl extends AbstractBusinessService 
 	 * 
 	 */
 	@Override
-	public boolean valid(String rm_code, String subject_ref, String resource_ref,SecuritySession session) throws BusinessError {
+	public boolean valid(String rm_code, String subject_id, String resource_id,SecuritySession session) throws BusinessError {
 		try {
 			//1-得到model
 			ResourceMappingModel model = findModel(rm_code, session);
 			String relation = model.relation_code;
-			StringBuilder sql = new StringBuilder("select id from "+relation+" where subject_ref=${subject_ref} and resource_ref=${resource_ref}");
-			JSONObject inst = _commondao.find(sql, JO.gen("subject_ref",subject_ref,"resource_ref",resource_ref));
+			StringBuilder sql = new StringBuilder("select id from "+relation+" where subject_id=${subject_id} and resource_id=${resource_id}");
+			JSONObject inst = _commondao.find(sql, JO.gen("subject_id",subject_id,"resource_id",resource_id));
 			//2-根据rlt拼写sql查询
 			return (inst != null);
 		} catch (Exception e) {

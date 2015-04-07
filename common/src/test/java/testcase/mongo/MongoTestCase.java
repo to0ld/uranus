@@ -25,7 +25,7 @@ public class MongoTestCase extends AbstractTestNGSpringContextTests{
 	/**
 	 * 验证一下一个复杂的结构进mongo了，出来是个啥
 	 */
-	@Test
+//	@Test
 	public void hello(){
 		//先清除
 		String coll_code = "json_log";

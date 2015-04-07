@@ -166,7 +166,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 				List<RltAttVO> atts = new ArrayList<>();
 				for (String pk : pkAtts) {
 					RltAttVO inst = new RltAttVO();
-					inst.ref = dataId;
+					inst.business_id = dataId;
 					inst.id = pk;
 					atts.add(inst);
 				}

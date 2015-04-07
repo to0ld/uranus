@@ -6,7 +6,6 @@ import net.popbean.pf.business.service.CommonBusinessService;
 import net.popbean.pf.dataset.vo.DataSetFieldModel;
 import net.popbean.pf.dataset.vo.DataSetModel;
 import net.popbean.pf.entity.helper.JO;
-import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.service.EntityStructBusinessService;
 import net.popbean.pf.helper.IOHelper;
@@ -110,10 +109,8 @@ public class AuthorityTestCase extends AbstractTestNGSpringContextTests{
 			String ds_id_perm = IdGenHelper.genID("pb", perm_ds_model.code);
 			commonService.save(perm_ds_model, ds_id_perm,null);
 			
-			String role_ref = VOHelper.buildRef(ds_id_role, role_ds_model.name);
-			String perm_ref = VOHelper.buildRef(ds_id_perm, perm_ds_model.name);
-			model.subject_ref = role_ref;
-			model.resource_ref = perm_ref;
+			model.subject_id = ds_id_role;
+			model.resource_id = ds_id_perm;
 			commonService.save(model, null);
 			//制作testcase app的perm的数据集(为了简单起见，我就直接mock了)
 			//4-创建一个角色

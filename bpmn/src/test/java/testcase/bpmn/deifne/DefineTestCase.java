@@ -48,9 +48,9 @@ public class DefineTestCase extends AbstractTestNGSpringContextTests{
 			//取消部署
 			List<String> deploy_id_list = new ArrayList<>();
 			for(JSONObject pd:pd_list){
-				JSONObject inst = pdService.findDeployModel(pd.getString("DEPLOYMENT_ID_"), client);
+				JSONObject inst = pdService.findDeployModel(pd.getString("deployment_id_"), client);
 				Assert.assertNotNull(inst);
-				deploy_id_list.add(pd.getString("DEPLOYMENT_ID_"));
+				deploy_id_list.add(pd.getString("deployment_id_"));
 			}
 			pdService.unDeploy(deploy_id_list, client);
 		} catch (Exception e) {

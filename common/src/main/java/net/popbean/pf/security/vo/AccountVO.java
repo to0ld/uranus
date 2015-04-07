@@ -26,8 +26,6 @@ public class AccountVO extends AbstractValueObject {
 	public static int STAT_BLOCK = 5;//黑名单
 	
 	//
-	@Field(domain = Domain.Pk)
-	public String id;
 	@Field
 	public String code;
 	@Field

@@ -30,9 +30,9 @@ public class ResourceMappingModel extends AbstractValueObject {
 	@Field(domain = Domain.Stat)
 	public Integer type = TYPE_INCLUDE;// 0:排除;3:包含
 	@Field(domain = Domain.Ref, name = "主体数据集")
-	public String subject_ref;// ref->pk_ds:name
+	public String subject_id;// ref->pk_ds:name
 	@Field(domain = Domain.Ref, name = "资源数据集")
-	public String resource_ref;//
+	public String resource_id;//
 	//
 	public DataSetModel subject_ds_model;
 	public DataSetModel resource_ds_model;

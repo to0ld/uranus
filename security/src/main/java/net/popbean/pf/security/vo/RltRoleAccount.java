@@ -18,10 +18,8 @@ public class RltRoleAccount extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -9133292986850360590L;
-	@Field(domain = Domain.Pk)
-	public String id;
 	@Field(domain = Domain.Ref)
-	public String role_ref;
+	public String role_id;
 	@Field(domain = Domain.Ref)
-	public String account_ref;
+	public String account_id;
 }

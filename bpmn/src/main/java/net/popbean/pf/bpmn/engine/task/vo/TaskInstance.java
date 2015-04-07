@@ -8,6 +8,4 @@ public class TaskInstance extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 2854368668412446182L;
-	public String id;
-	public String task_id;
 }

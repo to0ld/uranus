@@ -13,7 +13,6 @@ public class NodeVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 1799800618183581104L;
-	public String id;
 	public String code;
 	public String name;
 	public String code_type;//节点类型

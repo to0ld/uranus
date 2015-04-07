@@ -16,7 +16,7 @@ public class TaskDefine extends AbstractValueObject {
 	@Field(domain=Domain.Pk)
 	public String id;
 	@Field(domain=Domain.Ref)
-	public String task_ref;//proc_def_code:task_code可好
+	public String task_id;//proc_def_code:task_code可好
 	public String proc_def_code;//流程定义的编码等同于主键
 	@Field(name="单据编号")
 	public String bill_code;//最好定义一下stage,

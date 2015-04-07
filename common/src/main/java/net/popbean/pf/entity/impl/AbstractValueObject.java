@@ -26,9 +26,9 @@ public class AbstractValueObject implements IValueObject {
 	@Field(domain = Domain.Pk, name = "主键")
 	public String id;
 	@Field(name = "创建者", domain = Domain.Ref)
-	public String account_crt_ref;
+	public String account_crt_id;
 	@Field(name = "所属企业", domain = Domain.Ref)
-	public String company_crt_ref;
+	public String company_crt_id;//crt_company_id vs company_crt_id vs compnay_id_crt
 	@Field(name = "状态", domain = Domain.Stat, rangeset = "0:编辑@3:处理中@5:已完成")
 	public Integer status;
 	@Field(domain = Domain.TimeStamp, name = "创建时间")

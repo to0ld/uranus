@@ -22,8 +22,6 @@ public class PermVO extends AbstractValueObject {
 	public static final int TYPE_NODE = 5;
 	public static final int TYPE_ACT = 7;
 	//
-	@Field(domain=Domain.Pk)
-	public String id;
 	@Field
 	public String code;
 	@Field
@@ -39,11 +37,11 @@ public class PermVO extends AbstractValueObject {
 	@Field(domain=Domain.Memo)
 	public String memo;
 	@Field(domain=Domain.Ref)
-	public String app_ref;//
+	public String app_code;//
 	public Integer i_def;//默认节点
 	@Field(name="图标")
 	public String icon_uri;//图标
 	@Field(domain=Domain.Ref)
-	public String folder_ref;//所属目录主键
+	public String folder_id;//所属目录主键
 	//
 }

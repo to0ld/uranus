@@ -12,6 +12,6 @@ public class JobModel extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 8019467924280187751L;
-	public String job_code;
+	public String code;
 	public String trigger_code;
 }

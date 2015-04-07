@@ -1,7 +1,5 @@
 package net.popbean.pf.bpmn.engine.process.instance.vo;
 
-import java.sql.Timestamp;
-
 import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
@@ -24,8 +22,6 @@ public class ProcessInstance extends AbstractValueObject {
 	public static final int STAT_FINISH = 5;//完成状态
 	public static final int STAT_REJECT  = -3;//驳回
 	//
-	@Field(domain=Domain.Pk)
-	public String id;
 	@Field
 	public String proc_inst_id;
 	@Field
@@ -33,7 +29,7 @@ public class ProcessInstance extends AbstractValueObject {
 	@Field(name="工作项编码值")
 	public String code_value;//一般是单据号
 	@Field(domain=Domain.Ref)
-	public String dept_ref;//所在组织
+	public String dept_id;//所在组织
 	@Field(domain=Domain.Seriescode,name="级次码")
 	public String series;//[/a/b/c/]
 	@Field(name="流程编码")

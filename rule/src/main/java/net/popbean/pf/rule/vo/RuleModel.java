@@ -25,16 +25,14 @@ public class RuleModel extends AbstractValueObject {
 	public static final int RESULT_JO = 3;
 	public static final int RESULT_LIST = 5;
 	//
-	@Field(domain = Domain.Pk)
-	public String rule_id;
 	@Field
-	public String rule_code;
+	public String code;
 	@Field
-	public String rule_name;
+	public String name;
 	@Field(domain = Domain.Int, name = "返回类型")
 	public Integer result_type;
 	@Field(domain = Domain.Memo,name="备注")
-	public String rule_memo;
+	public String memo;
 
 	//
 	public List<RuleDetail> details;

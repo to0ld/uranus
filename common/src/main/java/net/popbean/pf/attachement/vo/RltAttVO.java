@@ -14,7 +14,7 @@ public class RltAttVO extends AbstractValueObject {
 	private static final long serialVersionUID = 5834487064778701120L;
 	//
 	@Field(domain=Domain.Ref)
-	public String ref;
+	public String business_id;
 	@Field(domain = Domain.Ref)
-	public String attachement_ref;
+	public String attachement_id;
 }

@@ -19,8 +19,6 @@ public class TaskAction extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 1276514296777734693L;
 	//
-	@Field(domain = Domain.Pk)
-	public String id;
 	@Field(name = "编码")
 	public String code;
 	@Field(name = "名称")

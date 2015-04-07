@@ -16,10 +16,6 @@ public class RoleVO extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain = Domain.Ref)
-	public String account_crt_ref;
-	@Field(domain = Domain.Ref)
-	public String company_crt_ref;
 	@Field(domain = Domain.Memo)
 	public String memo;
 	@Field(name = "应用编码")

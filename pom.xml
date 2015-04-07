@@ -16,7 +16,7 @@
 		<org.hamcrest.version>1.3</org.hamcrest.version>
 		<javax.servlet.version>3.0.1</javax.servlet.version>
 		<commons-codec.version>1.10</commons-codec.version>
-		<skipTests>true</skipTests>
+		<skipTests>false</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>

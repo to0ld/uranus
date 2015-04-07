@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -125,6 +126,7 @@ public class ProcessDefineBusinessServiceImpl extends AbstractBusinessService im
 	@Override
 	public JSONObject findDeployModel(String deploy_id,SecuritySession client)throws BusinessError{
 		try {
+			Assert.isTrue(!StringUtils.isBlank(deploy_id), "部署id为空，不能继续该操作");
 			StringBuilder sql = new StringBuilder(" select a.*,b.* ");
 			sql.append(" from act_re_procdef a left join act_ge_bytearray b on (a.deployment_id_=b.deployment_id_) ");
 			sql.append(" where 1=1 and b.generated_=0 ");

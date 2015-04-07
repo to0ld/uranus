@@ -30,9 +30,9 @@ public class LockServiceTestCase extends AbstractTestNGSpringContextTests {
 			//正在处理，请稍后再试
 		} catch (Exception e) {
 			if(e instanceof BusinessError){
-				Assert.assertEquals(((BusinessError)e).msg, "正在处理，请稍后再试","要是能重复锁，也挺悲剧的，这就是为啥我不喜欢redisson的原因");
+				Assert.assertTrue(((BusinessError)e).msg.indexOf("正在处理，请稍后再试")!=-1, "要是能重复锁，也挺悲剧的，这就是为啥我不喜欢redisson的原因");
 			}else{
-				Assert.fail("repeat lock fail", e);	
+				Assert.fail(((BusinessError)e).msg, e);	
 			}
 		}
 	}

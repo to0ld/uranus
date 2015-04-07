@@ -22,14 +22,14 @@ public class ResourceMappingHelper {
 		//
 		List<FieldModel> field_list = new ArrayList<>();
 		FieldModel id = FieldHelper.pk("id", "主键");
-		FieldModel subject_ref = FieldHelper.ref("subject_ref","主体参照");
-		FieldModel resource_ref = FieldHelper.ref("resource_ref","资源参照");
+		FieldModel subject_id = FieldHelper.ref("subject_id","主体参照");
+		FieldModel resource_id = FieldHelper.ref("resource_id","资源参照");
 		FieldModel status = FieldHelper.stat("status","状态");
 		FieldModel serial = FieldHelper.integer("serial","序号");
 		FieldModel memo = FieldHelper.memo("memo","备注");
 		field_list.add(id);
-		field_list.add(subject_ref);
-		field_list.add(resource_ref);
+		field_list.add(subject_id);
+		field_list.add(resource_id);
 		field_list.add(status);
 		field_list.add(serial);
 		field_list.add(memo);

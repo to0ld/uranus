@@ -3,7 +3,9 @@
 		"code":"rm_showcase",
 		"relation_code":"rlt_a_b",
 		"memo":"我就是想示范如何使用",
-		"subject_ref":"pb:spring_role_test@#@角色(测试)",
-		"resource_ref":"pb:spring_perm_test@#@权限(测试)",
+		"subject_id":"pb:spring_role_test",
+		"subject_name":"角色(测试)",
+		"resource_id":"pb:spring_perm_test",
+		"resource_name":"权限(测试)"
 	}
 }

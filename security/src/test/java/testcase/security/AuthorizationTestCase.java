@@ -39,7 +39,7 @@ import com.alibaba.fastjson.JSONObject;
  *
  */
 @ContextConfiguration(locations={"classpath:/spring/app.test.xml"})
-public class AuthorityTestCase extends AbstractTestNGSpringContextTests{
+public class AuthorizationTestCase extends AbstractTestNGSpringContextTests{
 	@Autowired
 	@Qualifier("service/pf/entity/struct")
 	EntityStructBusinessService esService;

@@ -25,7 +25,8 @@
 				</property>
 			</bean>
  
-			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+			<!-- <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> -->
+			<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
 						<value>text/plain</value>
@@ -54,10 +55,12 @@
 			<bean class="net.popbean.pf.mvc.interceptor.TraceInterceptor"/>
 		 </mvc:interceptor>
 		<!-- 类似的还有access token -->
+		<!-- 
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<bean class="net.popbean.pf.mvc.interceptor.CSRFInterceptor" />
 		</mvc:interceptor>
+		 -->
 	</mvc:interceptors>
 	<!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -95,6 +98,7 @@
 			</props>
 		</property>
 	</bean>
+	<!-- 
 	<beans profile="prod">
 		<context:property-placeholder ignore-unresolvable="true" location="classpath:pb.properties" />
 		<context:property-placeholder ignore-unresolvable="true" location="classpath:pb.data.properties" />
@@ -103,4 +107,5 @@
 		<context:property-placeholder ignore-unresolvable="true" location="classpath:pb.dev.properties" />
 		<context:property-placeholder ignore-unresolvable="true" location="classpath:pb.dev.data.properties" />
 	</beans>
+	 -->
 </beans>

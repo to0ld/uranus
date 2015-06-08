@@ -6,4 +6,11 @@
     <version>1.0</version>
   </parent>
   <artifactId>soa.server</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>net.popbean</groupId>
+  		<artifactId>soa.client</artifactId>
+  		<version>1.0</version>
+  	</dependency>
+  </dependencies>
 </project>

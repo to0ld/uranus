@@ -1,0 +1,9 @@
+{
+	"data":{
+		"code":"rm_role_perm",
+		"relation_code":"rlt_role_perm",
+		"memo":"角色-权限映射",
+		"subject_id":"pb:db_role",
+		"resource_id":"pb:db_perm",
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"data":{
+		"code":"rm_role_account",
+		"relation_code":"rlt_role_account",
+		"memo":"角色-用户映射",
+		"subject_id":"pb:db_role",
+		"resource_id":"pb:db_account",
+	}
+}

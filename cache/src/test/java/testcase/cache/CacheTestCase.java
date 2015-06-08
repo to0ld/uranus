@@ -60,12 +60,19 @@ public class CacheTestCase extends AbstractTestNGSpringContextTests{
 			Assert.assertEquals(ret, "say hello("+count+")");//跟上一次的数据进行对比
 			Collection<String> cache_list = cmService.fetchAllCacheName();
 			Assert.assertNotNull(cache_list);
-			System.out.println(JSON.toJSONString(cache_list));
+			System.out.println("cache_list:"+JSON.toJSONString(cache_list));
 			//尝试清除后，再调用，count会增加
 			count = helloService.count();//初始值
+			System.out.println("current count:"+count);
+			System.out.println("evict all");
 			cmService.evict("service/hello", null);
+			count = helloService.count();//初始值
+			System.out.println("current count:"+count);
+			System.out.println("call say");
 			ret = helloService.say();//此时，cache空了，应该去再执行一次，所以count会增加
-			Assert.assertEquals(ret, "say hello("+(count+1)+")");//此时，
+			count = helloService.count();//初始值
+			System.out.println("current count:"+count);
+			Assert.assertEquals(ret, "say hello("+count+")");//此时，
 		} catch (Exception e) {
 			Assert.fail(TestHelper.getErrorMsg(e), e);
 		}

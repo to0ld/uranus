@@ -8,6 +8,16 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
 	<mvc:interceptors>
+		<!-- 
+		<mvc:interceptor>
+			<mvc:mapping path="/node/**" />
+			<bean class="net.popbean.pf.mvc.interceptor.access.NodeAccessInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/api/**" />
+			<bean class="net.popbean.pf.mvc.interceptor.access.ApiInterceptor" />
+		</mvc:interceptor>
+		 -->
 		<mvc:interceptor>
 			<mvc:mapping path="/testcase/**" />
 			<mvc:mapping path="/it/**" />

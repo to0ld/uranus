@@ -33,6 +33,8 @@
 		<module>bill</module>
 		<module>schedule</module>
 		<module>config</module>
+		<module>soa.client</module>
+		<module>soa.server</module>
 	</modules>
 	<build>
 		<pluginManagement>

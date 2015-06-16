@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+                http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+                http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"  
+    default-lazy-init="false">  
+	<context:component-scan base-package="testcase1">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+	</context:component-scan>      
+    <!-- fixedAddress -->  
+    <!--   
+    <bean id="fixedAddressProvider" class="cn.slimsmart.thrift.rpc.zookeeper.FixedAddressProvider">  
+         <property name="service" value="cn.slimsmart.thrift.rpc.demo.EchoSerivce" />  
+         <property name="serverAddress" value="192.168.36.215:9001:1,192.168.36.215:9002:2,192.168.36.215:9003:3" />  
+    </bean>  
+    <bean id="echoSerivce" class="cn.slimsmart.thrift.rpc.ThriftServiceClientProxyFactory">  
+        <property name="maxActive" value="5" />  
+        <property name="idleTime" value="10000" />  
+        <property name="serverAddressProvider" ref="fixedAddressProvider" />  
+    </bean>  
+   -->  
+    <!-- zookeeper   -->  
+<!--     <bean id="zk/factory" class="net.popbean.pf.zk.ZookeeperFactory" destroy-method="close">  
+    </bean> -->
+    <bean id="serivce/echo" class="net.popbean.pf.soa.client.multiplexed.ThriftServiceMultiplexedClientProxyFactory" destroy-method="close">  
+        <property name="maxActive" value="5" />  
+        <property name="idleTime" value="1800000" />  
+        <property name="serverAddressProvider">  
+            <bean class="net.popbean.pf.soa.client.impl.ThriftServerAddressProviderZookeeper">  
+                <property name="service" value="net.popbean.a.service.EchoService" />
+                <!-- <property name="service" value="service/echo/mock" /> -->  
+                <property name="version" value="1.0.0" />  
+                <property name="zkClient" ref="zk/factory" />  
+            </bean>  
+        </property>  
+    </bean>
+    <bean id="serivce/foo" class="net.popbean.pf.soa.client.multiplexed.ThriftServiceMultiplexedClientProxyFactory" destroy-method="close">  
+        <property name="maxActive" value="5" />  
+        <property name="idleTime" value="1800000" />  
+        <property name="serverAddressProvider">  
+            <bean class="net.popbean.pf.soa.client.impl.ThriftServerAddressProviderZookeeper">  
+                <property name="service" value="net.popbean.b.service.FooService" />  
+                <property name="version" value="1.0.0" />  
+                <property name="zkClient" ref="zk/factory" />  
+            </bean>  
+        </property>  
+    </bean>  
+</beans> 

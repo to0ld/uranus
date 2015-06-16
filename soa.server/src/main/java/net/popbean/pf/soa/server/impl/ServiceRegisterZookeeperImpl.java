@@ -12,17 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-
 /**
- *  注册服务列表到zk
+ * 注册服务列表到zk
  */
-public class ServiceRegisterZookeeperImpl implements ServiceRegister{
-	
+public class ServiceRegisterZookeeperImpl implements ServiceRegister {
+
 	private CuratorFramework zkClient;
-	
-	public ServiceRegisterZookeeperImpl(){}
-	
-	public ServiceRegisterZookeeperImpl(CuratorFramework zkClient){
+
+	public ServiceRegisterZookeeperImpl() {
+	}
+
+	public ServiceRegisterZookeeperImpl(CuratorFramework zkClient) {
 		this.zkClient = zkClient;
 	}
 
@@ -32,26 +32,24 @@ public class ServiceRegisterZookeeperImpl implements ServiceRegister{
 
 	@Override
 	public void register(String service, String version, String address) {
-		if(zkClient.getState() == CuratorFrameworkState.LATENT){
+		if (zkClient.getState() == CuratorFrameworkState.LATENT) {
 			zkClient.start();
 		}
-		if(StringUtils.isEmpty(version)){
-			version="1.0.0";
+		if (StringUtils.isEmpty(version)) {
+			version = "1.0.0";
 		}
-		//临时节点
+		// 临时节点
 		try {
-			zkClient.create()
-				.creatingParentsIfNeeded()
-				.withMode(CreateMode.EPHEMERAL)
-				.forPath("/"+service+"/"+version+"/"+address);
+			String path = "/" + service + "/" + version + "/" + address;
+			zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
 		} catch (UnsupportedEncodingException e) {
 			throw new ThriftException("register service address to zookeeper exception: address UnsupportedEncodingException", e);
 		} catch (Exception e) {
 			throw new ThriftException("register service address to zookeeper exception:{}", e);
 		}
 	}
-	
-	public void close(){
+
+	public void close() {
 		zkClient.close();
 	}
 }

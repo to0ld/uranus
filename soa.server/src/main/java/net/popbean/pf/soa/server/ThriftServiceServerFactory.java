@@ -7,6 +7,7 @@ import net.popbean.pf.soa.client.ServerIpResolve;
 import net.popbean.pf.soa.client.impl.ServerIpLocalNetworkResolve;
 import net.popbean.pf.zk.ThriftException;
 
+import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -72,18 +73,24 @@ public class ThriftServiceServerFactory implements InitializingBean {
 		}
 
 		String hostname = serverIP + ":" + port + ":" + weight;
+
+		//
 		Class<?> serviceClass = service.getClass();
 		// 获取实现类接口
 		Class<?>[] interfaces = serviceClass.getInterfaces();
 		if (interfaces.length == 0) {
 			throw new IllegalClassFormatException("service-class should implements Iface");
 		}
+		//
+//		TMultiplexedProcessor p = new TMultiplexedProcessor();
+//		p.registerProcessor("", null);
+		//
 		// reflect,load "Processor";
 		TProcessor processor = null;
 		String serviceName = null;
 		for (Class<?> clazz : interfaces) {
 			String cname = clazz.getSimpleName();
-			if (!cname.equals("Iface")) {
+			if (!cname.equals("Iface")) {//找到iface，找processor
 				continue;
 			}
 			serviceName = clazz.getEnclosingClass().getName();
@@ -112,32 +119,7 @@ public class ThriftServiceServerFactory implements InitializingBean {
 			serviceRegister.register(serviceName, version, hostname);
 		}
 
-	}
-	class ServerThread extends Thread {
-		private TServer server;
-		ServerThread(TProcessor processor, int port) throws Exception {
-			TNonblockingServerSocket serverTransport = new TNonblockingServerSocket(port);
-			TThreadedSelectorServer.Args tArgs = new TThreadedSelectorServer.Args(serverTransport);  
-			TProcessorFactory processorFactory = new TProcessorFactory(processor);
-			tArgs.processorFactory(processorFactory);
-			tArgs.transportFactory(new TFramedTransport.Factory());  
-			tArgs.protocolFactory( new TBinaryProtocol.Factory(true, true)); 
-			server = new TThreadedSelectorServer(tArgs);
-		}
-
-		@Override
-		public void run(){
-			try{
-				server.serve();
-			}catch(Exception e){
-				//
-			}
-		}
-		public void stopServer(){
-			server.stop();
-		}
-	}
-	
+	}	
 	public void close() {
 		serverThread.stopServer();
 	}

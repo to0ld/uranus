@@ -38,14 +38,6 @@ public class ThriftClientPoolFactory extends BasePooledObjectFactory<TServiceCli
 		this.callback = callback;
 	}
 
-	static interface PoolOperationCallBack {
-		// 销毁client之前执行
-		void destroy(TServiceClient client);
-
-		// 创建成功是执行
-		void make(TServiceClient client);
-	}
-
 	@Override
 	public void destroyObject(PooledObject<TServiceClient> client) throws Exception {
 		if (callback != null) {

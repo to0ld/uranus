@@ -65,9 +65,9 @@ public class ThriftServiceMultiplexedClientProxyFactory implements FactoryBean, 
 	public void afterPropertiesSet() throws Exception {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		// 加载Iface接口
-		objectClass = classLoader.loadClass(serverAddressProvider.getService() + "$Iface");
+		objectClass = classLoader.loadClass(serverAddressProvider.getClazz() + "$Iface");
 		// 加载Client.Factory类
-		Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(serverAddressProvider.getService() + "$Client$Factory");
+		Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(serverAddressProvider.getClazz() + "$Client$Factory");
 		TServiceClientFactory<TServiceClient> clientFactory = fi.newInstance();
 //		ThriftMultiplexedClientPoolFactory clientPool = new ThriftMultiplexedClientPoolFactory(serverAddressProvider, clientFactory, callback);
 		ThriftMultiplexedClientPoolFactory clientPool = new ThriftMultiplexedClientPoolFactory(serverAddressProvider, clientFactory, callback);

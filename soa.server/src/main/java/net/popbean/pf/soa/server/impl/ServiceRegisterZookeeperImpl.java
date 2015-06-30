@@ -41,6 +41,7 @@ public class ServiceRegisterZookeeperImpl implements ServiceRegister {
 		// 临时节点
 		try {
 			String path = "/" + service + "/" + version + "/" + address;
+			System.out.println("path:"+path);
 			zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
 		} catch (UnsupportedEncodingException e) {
 			throw new ThriftException("register service address to zookeeper exception: address UnsupportedEncodingException", e);

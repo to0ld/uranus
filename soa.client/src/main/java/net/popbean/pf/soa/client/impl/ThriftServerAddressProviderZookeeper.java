@@ -29,6 +29,8 @@ public class ThriftServerAddressProviderZookeeper implements ThriftServerAddress
 
 	// 注册服务
 	private String service;
+	//服务指向类
+	private String clazz;
 	// 服务版本号
 	private String version = "1.0.0";
 
@@ -52,7 +54,9 @@ public class ThriftServerAddressProviderZookeeper implements ThriftServerAddress
 	public void setService(String service) {
 		this.service = service;
 	}
-
+	public void setClazz(String value){
+		this.clazz = value;
+	}
 	public void setVersion(String version) {
 		this.version = version;
 	}
@@ -189,6 +193,10 @@ public class ThriftServerAddressProviderZookeeper implements ThriftServerAddress
 	@Override
 	public String getService() {
 		return service;
+	}
+	@Override
+	public String getClazz() {
+		return clazz;
 	}
 
 }

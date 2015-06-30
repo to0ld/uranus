@@ -11,6 +11,9 @@ public interface ThriftServerAddressProvider {
 	// 获取服务名称
 	String getService();
 
+	// 获得服务指向类
+	String getClazz();
+
 	/**
 	 * 获取所有服务端地址
 	 * 

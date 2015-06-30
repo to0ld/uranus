@@ -89,7 +89,8 @@ public class ThriftServiceMultiplexedServerFactory implements InitializingBean {
 			TProcessor tp = buildProcessor(value);
 			if (tp != null) {
 //				String bean_alias = entry.getKey();entry.getValue().getClass().getName()
-				String bean_alias = entry.getValue().getClass().getName();
+//				String bean_alias = entry.getValue().getClass().getName();
+				String bean_alias = entry.getKey();
 				thirft_service.put(bean_alias, entry.getValue());
 				p.registerProcessor(bean_alias, tp);
 			}
@@ -104,10 +105,13 @@ public class ThriftServiceMultiplexedServerFactory implements InitializingBean {
 		iter = thirft_service.entrySet().iterator();
 		while (iter.hasNext()) {
 			Entry<String, Object> entry = iter.next();
-			Object value = entry.getValue();
-			Class<?> sc = value.getClass();
-			if(sc != null && serviceRegister != null){
-				serviceRegister.register(sc.getName(), version, hostname);
+//			Object value = entry.getValue();
+//			Class<?> sc = value.getClass();
+//			if(sc != null && serviceRegister != null){
+//				serviceRegister.register(sc.getName(), version, hostname);
+//			}
+			if(serviceRegister != null){
+				serviceRegister.register(entry.getKey(), version, hostname);
 			}
 		}
 	}

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.popbean</groupId>
 		<artifactId>net.popbean.pf</artifactId>
-		<version>1.0</version>
+		<version>${popbean.version}</version>
 	</parent>
 	<artifactId>common</artifactId>
 	<dependencies>
@@ -156,20 +156,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>osc-repository</id>
-			<name>local private repository</name>
-			<!-- <url>http://maven.oschina.net/content/groups/public/</url> -->
-			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -200,6 +186,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>osc-thirdparty</id>
@@ -207,4 +194,5 @@
 			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
 		</repository>
 	</distributionManagement>
+	 -->
 </project>

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.popbean</groupId>
 		<artifactId>net.popbean.pf</artifactId>
-		<version>1.0</version>
+		<version>${popbean.version}</version>
 	</parent>
 	<artifactId>mvc</artifactId>
 	<dependencies>

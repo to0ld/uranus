@@ -30,7 +30,7 @@ public class AbstractValueObject implements IValueObject {
 	@Field(name = "所属企业", domain = Domain.Ref)
 	public String company_crt_id;//crt_company_id vs company_crt_id vs compnay_id_crt
 	@Field(name = "状态", domain = Domain.Stat, rangeset = "0:编辑@3:处理中@5:已完成")
-	public Integer status;
+	public Integer status = 5;
 	@Field(domain = Domain.TimeStamp, name = "创建时间")
 	public Timestamp crt_ts;
 	@Field(domain = Domain.TimeStamp, name = "最后修改时间")

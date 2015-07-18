@@ -1,13 +1,12 @@
 package net.popbean.pf.security.vo;
 
-import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
 import net.popbean.pf.entity.impl.AbstractValueObject;
 
 /**
  * 常规账号，用手机号，邮箱做账号
- * 
+ * 注册用户如果量级比较大，比如千万，为了确保速度(计算是缓存也是有成本的)可以做标注：日活；月活；季活；年活，针对不同level进行缓存
  * @author to0ld
  *
  */

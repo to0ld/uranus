@@ -1,6 +1,5 @@
 package net.popbean.pf.security.vo;
 
-import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
 import net.popbean.pf.entity.impl.AbstractValueObject;
@@ -17,6 +16,7 @@ public class AppVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -2692355483300031372L;
+	//
 	@Field(name = "编码")
 	public String code;
 	@Field(name = "名称")

@@ -29,7 +29,7 @@ public class PermVO extends AbstractValueObject {
 	@Field(domain=Domain.Stat)
 	public Integer type;//0:app;3:folder;5:node;7:action
 	@Field
-	public String badge_code;//BADGE键值
+	public String badge;//BADGE一般对应的是一个bean
 	@Field(domain=Domain.Int)
 	public Integer serial;//序号
 	@Field(domain=Domain.Memo)
@@ -44,4 +44,6 @@ public class PermVO extends AbstractValueObject {
 	@Field(domain=Domain.Ref)
 	public String folder_id;//所属目录主键
 	//
+	@Field(domain=Domain.Stat)
+	public Integer scope = 0;//默认授权；0为private 需要授权；3为public 不需要授权
 }

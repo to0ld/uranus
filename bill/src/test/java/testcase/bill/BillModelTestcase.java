@@ -171,7 +171,7 @@ public class BillModelTestcase extends AbstractTestNGSpringContextTests{
 			//2-保存bill model
 			bmService.save(model, session);
 			//3-读取bill model(不带数据)
-			BillModel inst = bmService.find(model.code, model.stage, false, session);
+			BillModel inst = bmService.find(model.code, model.stage, true, session);
 			Assert.assertNotNull(inst);
 			Assert.assertEquals(inst.code, model.code,"不得行呀");//FIXME 如果对比两个单据是否相同呢。。。
 			//4-bill model performance

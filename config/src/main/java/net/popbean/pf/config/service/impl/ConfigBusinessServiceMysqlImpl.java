@@ -141,7 +141,7 @@ public class ConfigBusinessServiceMysqlImpl extends AbstractBusinessService impl
 			if(af!=null){
 				ConfigFieldModel cfm = new ConfigFieldModel();
 				cfm.code = StringUtils.isBlank(af.code())?f.getName():af.code();//这个可不能为空
-				cfm.domain = (cfm.domain == null)?Domain.Code:af.domain();//如果为空就默认
+				cfm.domain = (cfm.domain == null)?Domain.code:af.domain();//如果为空就默认
 				cfm.rangeset = af.rangeset();
 				cfm.config_id = id;
 				//

@@ -218,16 +218,16 @@ public class EntityWrapperHelper implements Opcodes{
 	 * @return
 	 */
 	private static String getDomainClassVendor(FieldModel model){
-		if(model.type.equals(Domain.Code) || model.type.equals(Domain.Memo) || model.type.equals(Domain.Pk) || model.type.equals(Domain.Seriescode)){
+		if(model.type.equals(Domain.code) || model.type.equals(Domain.memo) || model.type.equals(Domain.pk) || model.type.equals(Domain.seriescode)){
 			return "java/lang/String";
-		}else if(model.type.equals(Domain.Stat)){//支持stat field有两种pojo field类
+		}else if(model.type.equals(Domain.stat)){//支持stat field有两种pojo field类
 			return model.clazz.replaceAll("\\.", "/");
 //			return "java/lang/Integer";
-		}else if(model.type.equals(Domain.Money)){
+		}else if(model.type.equals(Domain.money)){
 			return "java/math/BigDecimal";
-		}else if(model.type.equals(Domain.Date)){
+		}else if(model.type.equals(Domain.date)){
 			return "java/sql/Date";
-		}else if(model.type.equals(Domain.TimeStamp)){
+		}else if(model.type.equals(Domain.timestamp)){
 			return "java/sql/Timestamp";
 		}
 		return "java/lang/String";

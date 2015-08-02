@@ -20,7 +20,7 @@ import net.popbean.pf.lock.LockService;
  * @author to0ld
  *
  */
-@Service("service/pf/lock/mongo")
+//@Service("service/pf/lock/mongo")
 public class LockServiceMongoImpl implements LockService {
 	@Value("${is.dev}")
 	protected boolean isDev = true;//是否为开发环境，应该分为prod/dev/test三个stage

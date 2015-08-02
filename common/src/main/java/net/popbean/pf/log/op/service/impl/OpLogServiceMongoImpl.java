@@ -22,7 +22,7 @@ import net.popbean.pf.security.vo.SecuritySession;
  * @author to0ld
  *
  */
-@Service("service/pf/log/op/mongo")
+//@Service("service/pf/log/op/mongo")
 public class OpLogServiceMongoImpl implements OpLogService {
 	//
 	@Autowired

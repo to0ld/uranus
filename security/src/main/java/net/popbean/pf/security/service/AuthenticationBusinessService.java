@@ -9,7 +9,7 @@ import net.popbean.pf.security.vo.SecuritySession;
  */
 public interface AuthenticationBusinessService {
 	/**
-	 * 
+	 * 个人感觉应该用account_code+app_code来做，但这个吧又似乎与resource-mapping功能重合了
 	 * @param account_code
 	 * @param account_pwd
 	 * @return

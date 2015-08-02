@@ -5,5 +5,5 @@ package net.popbean.pf.dataset.vo;
  *
  */
 public enum Scope {
-	Param,Data,Both
+	param,data,both
 }

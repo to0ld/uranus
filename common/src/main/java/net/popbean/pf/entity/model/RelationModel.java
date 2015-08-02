@@ -25,11 +25,11 @@ public class RelationModel extends AbstractValueObject {
 	public String code;//桥接表自身，也可以叫bridge_code;
 	@Field
 	public String entity_code_main;
-	@Field(domain=Domain.Ref)
+	@Field(domain=Domain.ref)
 	public String id_key_main;
 	@Field
 	public String entity_code_slave;
-	@Field(domain=Domain.Ref)
+	@Field(domain=Domain.ref)
 	public String id_key_slave;
 	@Field
 	public String type;//关系类型:inner:outer；bridge

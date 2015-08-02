@@ -14,6 +14,7 @@ import net.popbean.pf.entity.model.FieldModel;
 import net.popbean.pf.entity.model.helper.EntityModelHelper;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -272,6 +273,9 @@ public class JOHelper {
 	 * @return
 	 */
 	public static List<JSONObject> ja2list(JSONArray ja){
+		if(CollectionUtils.isEmpty(ja)){
+			return new ArrayList<JSONObject>();
+		}
 		List<JSONObject> ret = new ArrayList<>();
 		for(int i=0,len=ja.size();i<len;i++){
 			ret.add(ja.getJSONObject(i));

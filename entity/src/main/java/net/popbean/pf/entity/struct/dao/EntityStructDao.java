@@ -300,7 +300,7 @@ public class EntityStructDao extends CommonDao {
 			for(rs_col = dmd.getColumns(null, dmd.getUserName().toUpperCase(), entity_code, null);rs_col.next();){
 				FieldModel f = EntityModelHelper.buildFieldModel(rs_col);
 				if(f.code.equals(pk_field)){
-					f.type = Domain.Pk;
+					f.type = Domain.pk;
 					f.length = 60;
 				}
 				field_list.add(f);

@@ -21,13 +21,13 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			}
 			ret += convertField(field) + "\n";
 			pos++;
-			if(Domain.Ref.equals(field.type)){
+			if(Domain.ref.equals(field.type)){
 				
 			}
 		}
 		// 处理主键
 		FieldModel pk = model.findPK();
-		if (pk != null && (Domain.Pk.equals(pk.type))) {// 如果是临时表，无主键，那就用reffield吧
+		if (pk != null && (Domain.pk.equals(pk.type))) {// 如果是临时表，无主键，那就用reffield吧
 			ret += " ,constraint PK_" + tableCode + " primary key (" + pk.code + ") ";
 		}
 		ret += ")";
@@ -61,39 +61,39 @@ public class MysqlEntityStructImpl implements EntityStruct {
 	@Override
 	public String convertField(FieldModel field) throws Exception {
 		String ret = field.code + " ";
-		if (Domain.Code.equals(field.type) || Domain.Memo.equals(field.type)) {
+		if (Domain.code.equals(field.type) || Domain.memo.equals(field.type) || Domain.seriescode.equals(field.type)) {
+			ret += " varchar(" + field.length + ")";
+//			ret += " varchar(" + Domain.Code.getLength() + ")";
+			if (!StringUtils.isBlank(field.def_value)) {
+				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
+			}
+			if (field.isRequired()) {
+				ret += " not null ";
+			}
+		} else if (Domain.pk.equals(field.type)) {
 //			ret += " varchar(" + field.length + ")";
-			ret += " varchar(" + Domain.Code.getLength() + ")";
+			ret += " varchar(" + Domain.pk.getLength() + ")";
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		} else if (Domain.Pk.equals(field.type)) {
-//			ret += " varchar(" + field.length + ")";
-			ret += " varchar(" + Domain.Pk.getLength() + ")";
+		}else if(Domain.ref.equals(field.type)){
+			ret += " varchar(" + Domain.ref.getLength() + ")";
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
 			}
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		}else if(Domain.Ref.equals(field.type)){
-			ret += " varchar(" + Domain.Ref.getLength() + ")";
-			if (!StringUtils.isBlank(field.def_value)) {
-				ret += " default '" + field.def_value + "'";// 需要考虑的是，如果字符还得单引号
-			}
-			if (field.isRequired()) {
-				ret += " not null ";
-			}
-		} else if (Domain.Date.equals(field.type)) {
+		} else if (Domain.date.equals(field.type)) {
 			ret += " date ";
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		} else if (Domain.Money.equals(field.type)) {
-			ret += " DECIMAL(" + Domain.Money.getLength() + "," + field.fidelity + ")";
+		} else if (Domain.money.equals(field.type)) {
+			ret += " DECIMAL(" + Domain.money.getLength() + "," + field.fidelity + ")";
 			
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号
@@ -101,7 +101,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		} else if (Domain.Stat.equals(field.type)) {
+		} else if (Domain.stat.equals(field.type)) {
 			ret += " tinyint ";
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号
@@ -109,7 +109,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 			if (field.isRequired()) {
 				ret += " not null ";
 			}
-		} else if (Domain.TimeStamp.equals(field.type)) {
+		} else if (Domain.timestamp.equals(field.type)) {
 			ret += " TIMESTAMP ";
 			if (field.isRequired()) {
 				ret += " not null ";
@@ -124,7 +124,7 @@ public class MysqlEntityStructImpl implements EntityStruct {
 				}
 			}
 			
-		} else if (Domain.Int.equals(field.type)) {
+		} else if (Domain.integer.equals(field.type)) {
 			ret += " int ";
 			if (!StringUtils.isBlank(field.def_value)) {
 				ret += " default " + field.def_value + "";// 需要考虑的是，如果字符还得单引号

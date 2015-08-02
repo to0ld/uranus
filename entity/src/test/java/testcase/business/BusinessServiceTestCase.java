@@ -102,7 +102,7 @@ public class BusinessServiceTestCase extends AbstractTestNGSpringContextTests{
 		 * 
 		 */
 		private static final long serialVersionUID = 5903867680252760633L;
-		@Field(domain=Domain.Pk)
+		@Field(domain=Domain.pk)
 		public String pk_test;
 		@Field
 		public String test_code;

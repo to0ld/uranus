@@ -142,11 +142,11 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	protected JSONObject fixNumber(List<FieldModel> f_list, JSONObject jo) throws Exception {
 		for (int i = 0, len = f_list.size(); i < len; i++) {
 			FieldModel model = f_list.get(i);
-			if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Money) || model.type.equals(Domain.Int)){
+			if(model.type.equals(Domain.stat) || model.type.equals(Domain.money) || model.type.equals(Domain.integer)){
 				if (!JOHelper.has(model.code, jo) || StringUtils.isBlank(jo.getString(model.code))) {
-					if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Int)){
+					if(model.type.equals(Domain.stat) || model.type.equals(Domain.integer)){
 						jo.put(model.code, TypeUtils.castToInt(model.def_value));// 确保填补默认值
-					}else if(model.type.equals(Domain.Money)){
+					}else if(model.type.equals(Domain.money)){
 						jo.put(model.code, TypeUtils.castToBigDecimal(model.def_value));// 确保填补默认值
 					}else{
 						jo.put(model.code, model.def_value);// 确保填补默认值	
@@ -160,12 +160,12 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 	protected <T extends IValueObject> T fixNumber(List<FieldModel> f_list, T vo) throws Exception {
 		for (int i = 0, len = f_list.size(); i < len; i++) {
 			FieldModel model = f_list.get(i);
-			if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Money) || model.type.equals(Domain.Int)){
+			if(model.type.equals(Domain.stat) || model.type.equals(Domain.money) || model.type.equals(Domain.integer)){
 				Object value = VOHelper.get(vo, model.code);
 				if(value == null || StringUtils.isBlank(value.toString())){
-					if(model.type.equals(Domain.Stat) || model.type.equals(Domain.Int)){
+					if(model.type.equals(Domain.stat) || model.type.equals(Domain.integer)){
 						VOHelper.set(vo,model.code,TypeUtils.castToInt(model.def_value));// 确保填补默认值
-					}else if(model.type.equals(Domain.Money)){
+					}else if(model.type.equals(Domain.money)){
 						VOHelper.set(vo,model.code,TypeUtils.castToBigDecimal(model.def_value));// 确保填补默认值
 					}else{
 						VOHelper.set(vo,model.code,model.def_value);
@@ -372,7 +372,7 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 			if (JOHelper.isEmpty(count)) {
 				return new ArrayList<>();
 			}
-			int total_count = count.getInteger("T_COUNT");
+			int total_count = count.getInteger("t_count");
 			StringBuilder sql_final = new StringBuilder().append(sql).append(" limit " + start + "," + pageSize + " ");
 			List<JSONObject> list = query(sql_final, param);
 			//

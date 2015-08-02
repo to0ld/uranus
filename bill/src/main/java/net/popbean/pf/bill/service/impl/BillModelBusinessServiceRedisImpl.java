@@ -1,17 +1,26 @@
 package net.popbean.pf.bill.service.impl;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
 import net.popbean.pf.bill.helpers.BillModelHelper;
 import net.popbean.pf.bill.service.BillModelBusinessService;
+import net.popbean.pf.bill.vo.BillEntityModel;
+import net.popbean.pf.bill.vo.BillFieldModel;
 import net.popbean.pf.bill.vo.BillModel;
 import net.popbean.pf.business.service.impl.AbstractBusinessService;
 import net.popbean.pf.entity.helper.JO;
@@ -69,8 +78,54 @@ public class BillModelBusinessServiceRedisImpl extends AbstractBusinessService i
 		model = operations.opsForValue().get("bill/"+code);//bill/
 		return model;
 	}
+	/**
+	 * 构建模型中的默认值
+	 * 分为三种
+	 * 1- const:1.0 | code_value
+	 * 2- function now()
+	 * 3- clientenv : client.account_id
+	 * @param model
+	 * @param session
+	 * @return
+	 */
 	private JSONObject makeDefValue(BillModel model,SecuritySession session){
-		throw new UnsupportedOperationException("尚未实现");
+		JSONObject ret = new JSONObject();
+		//对模型进行遍历，先主后从main开始
+		BillEntityModel main = model.main;
+		for(BillFieldModel bfm:main.fields){
+			if(!StringUtils.isBlank(bfm.def_value)){
+				Object tmp = calcDefValue(bfm, bfm.def_value, session);
+				ret.put(bfm.code,tmp);
+			}
+		}
+		List<BillEntityModel> slaves = model.slaves;
+		for(BillEntityModel bem:slaves){
+			String pref = bem.code+":";
+			for(BillFieldModel bfm:bem.fields){
+				if(!StringUtils.isBlank(bfm.def_value)){
+					Object tmp = calcDefValue(bfm, bfm.def_value, session);
+					ret.put(pref+bem.code,tmp);
+				}
+			}
+		}
+		return ret;
+	}
+	private Object calcDefValue(BillFieldModel bfm,String def_value,SecuritySession session){
+		if(!StringUtils.isBlank(bfm.def_value)){
+			if(bfm.def_value.endsWith("()")){//暂时考虑只支持写死，将来通过规则来实现
+				return new Timestamp(System.currentTimeMillis());
+			}else if(bfm.def_value.startsWith("client.")){//环境变量
+//				JSONObject root = new JSONObject();
+//				root.put("client", session);
+				StandardEvaluationContext eval_ctx = new StandardEvaluationContext(session);
+				ExpressionParser parser = new SpelExpressionParser();
+				String key = bfm.def_value.replaceAll("client.", "");
+				Expression exp_inst = parser.parseExpression(key);
+				String tmp = exp_inst.getValue(eval_ctx,String.class);
+				return tmp;
+			}
+		}
+		return bfm.def_value;
 	}
 	/**
 	 * 验证模型是否可用，主要是：是否完备
@@ -113,6 +168,7 @@ public class BillModelBusinessServiceRedisImpl extends AbstractBusinessService i
 			key+= "/"+model.stage;
 		}
 		operations.opsForValue().set(key, model);
+		flush(model.code,model.stage,session);//保存就清除
 	}
 	@Override
 	@CacheEvict(value="service/bill/model",key="code+'-'+stage")

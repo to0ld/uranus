@@ -91,7 +91,7 @@ public class VOHelper {
 					}
 				}
 			}
-			if(f.type == Domain.Code || f.type == Domain.Memo || f.type == Domain.Pk){
+			if(f.type == Domain.code || f.type == Domain.memo || f.type == Domain.pk){
 				int maxLen = f.length;//((StringField)f).getMaxLen();
 				String v = jo.getString(f.code);
 				if(v!=null && v.length()>maxLen && f.code.lastIndexOf("_")==-1){//如果是ID_这样的，就不做任何处理

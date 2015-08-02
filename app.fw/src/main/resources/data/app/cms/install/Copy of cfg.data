@@ -1,0 +1,34 @@
+{
+	"imp":{
+		"skip":false,
+		"code":"cms",
+		"step":[
+			{"bean":"pf.upgrade.service.common","method":"changeTableStruct","skip":false},	--> import data
+			{"bean":"pf.upgrade.service","method":"initApp","skip":false},                  --> init app
+			
+			{"bean":"pf.upgrade.service","method":"convertDatasetModelPK","skip":false},    --> import service data(dataset:model+data)
+			{"bean":"pf.upgrade.service.dataset","method":"impdatasetmodel","skip":false},
+			{"bean":"pf.upgrade.service.dataset","method":"impRange","skip":false,"memo":"为了修改规则"},
+			{"bean":"pf.upgrade.service.rule","skip":false},
+			{"bean":"pf.upgrade.service.bill","method":"convertbillmodel","skip":false}
+		]
+	},
+	"memo":"初始化pf这个app的基础数据"
+}
+{
+	"data":{
+		"code":"cms",
+		"skip":false,
+		"badge":"service/cms/badge",
+		"memo":"拉开架势，准备扯淡",
+		"name":"内容管理系统",
+		"secret":"13800138000",
+		"step":[
+			"service/pf/srv/persistencebatch?skip=false",
+			"service/pf/srv/dbschema",
+			"service/pf/srv/app",
+			"service/pf/srv/perm?code=cms",
+			"service/pf/srv/nf"
+		]
+	}
+}

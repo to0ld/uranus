@@ -1,0 +1,13 @@
+{
+	"data":[
+		{
+			"code":"db_account",
+			"name":"人员数据集",
+			"app_code":"pf",
+			"src_type":"Sql",
+			"exec_exp":"select * from pb_bd_account where 1=1 ",
+			"fields":[
+			]
+		}
+	]
+}

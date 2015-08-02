@@ -1,0 +1,6 @@
+{
+	"data":[
+		{"code":"admin","name":"全站admin"},
+		{"code":"emp","name":"员工"}
+	]
+}

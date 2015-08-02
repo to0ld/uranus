@@ -14,24 +14,24 @@ public class ResourceMappingModel extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 3607238787796118266L;
 	//
-	public static final int TYPE_INCLUDE = 3;// 排除类型
-	public static final int TYPE_EXCLUDE = 0;// 包含类型
+	public static final int TYPE_INCLUDE = 3;// 包含类型
+	public static final int TYPE_EXCLUDE = 0;// 排除类型
 	//
 	@Field
 	public String code;
 	@Field
 	public String name;
 	@Field
-	public String relation_code;// 映射存储所在表
-	@Field(domain = Domain.Memo)
+	public String relation_code;// 映射存储所在表，应该予以自动生成为宜
+	@Field(domain = Domain.memo)
 	public String memo;// 备注
 	@Field
 	public String app_code;// 所属应用
-	@Field(domain = Domain.Stat)
+	@Field(domain = Domain.stat)
 	public Integer type = TYPE_INCLUDE;// 0:排除;3:包含
-	@Field(domain = Domain.Ref, name = "主体数据集")
+	@Field(domain = Domain.ref, name = "主体数据集")
 	public String subject_id;// ref->pk_ds:name
-	@Field(domain = Domain.Ref, name = "资源数据集")
+	@Field(domain = Domain.ref, name = "资源数据集")
 	public String resource_id;//
 	//
 	public DataSetModel subject_ds_model;

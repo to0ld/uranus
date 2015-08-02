@@ -17,7 +17,7 @@ public class ProcessParam extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -470403335475503617L;
-	@Field(domain = Domain.Ref, name = "流程定义引用")
+	@Field(domain = Domain.ref, name = "流程定义引用")
 	public String proc_def_id;
 	@Field
 	public Domain type;
@@ -25,7 +25,7 @@ public class ProcessParam extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain = Domain.Stat)
+	@Field(domain = Domain.stat)
 	public int required;
 	@Field
 	public String range;

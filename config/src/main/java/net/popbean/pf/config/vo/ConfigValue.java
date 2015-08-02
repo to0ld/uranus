@@ -21,7 +21,7 @@ public class ConfigValue extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 7334996765043955328L;
-	@Field(domain=Domain.Ref,relation=ConfigModel.class)
+	@Field(domain=Domain.ref,relation=ConfigModel.class)
 	public String config_id;//通过这种方式，来建立relation，从形式上讲是冗余的
 	@Field
 	public String config_name;
@@ -37,64 +37,64 @@ public class ConfigValue extends AbstractValueObject {
 	@Field(name="编码值4")
 	public String code_4;
 	//
-	@Field(domain=Domain.TimeStamp,name="时间戳值0")
+	@Field(domain=Domain.timestamp,name="时间戳值0")
 	public Timestamp ts_0;
-	@Field(domain=Domain.TimeStamp,name="时间戳值0")
+	@Field(domain=Domain.timestamp,name="时间戳值0")
 	public Timestamp ts_1;
-	@Field(domain=Domain.TimeStamp,name="时间戳值0")
+	@Field(domain=Domain.timestamp,name="时间戳值0")
 	public Timestamp ts_2;
-	@Field(domain=Domain.TimeStamp,name="时间戳值0")
+	@Field(domain=Domain.timestamp,name="时间戳值0")
 	public Timestamp ts_3;
-	@Field(domain=Domain.TimeStamp,name="时间戳值0")
+	@Field(domain=Domain.timestamp,name="时间戳值0")
 	public Timestamp ts_4;
 	//
-	@Field(domain=Domain.Ref,name="参照值0")
+	@Field(domain=Domain.ref,name="参照值0")
 	public String ref_0;
-	@Field(domain=Domain.Ref,name="参照值1")
+	@Field(domain=Domain.ref,name="参照值1")
 	public String ref_1;
-	@Field(domain=Domain.Ref,name="参照值2")
+	@Field(domain=Domain.ref,name="参照值2")
 	public String ref_2;
-	@Field(domain=Domain.Ref,name="参照值3")
+	@Field(domain=Domain.ref,name="参照值3")
 	public String ref_3;
-	@Field(domain=Domain.Ref,name="参照值4")
+	@Field(domain=Domain.ref,name="参照值4")
 	public String ref_4;
 	//虽然叫备注，但一般用来存规则，表达式啥的，建议别用
-	@Field(domain=Domain.Ref,name="备注值0")
+	@Field(domain=Domain.ref,name="备注值0")
 	public String memo_0;
-	@Field(domain=Domain.Ref,name="备注值1")
+	@Field(domain=Domain.ref,name="备注值1")
 	public String memo_1;
 	//
-	@Field(domain=Domain.Int,name="整型0")
+	@Field(domain=Domain.integer,name="整型0")
 	public int int_0;
-	@Field(domain=Domain.Stat,name="整型1")
+	@Field(domain=Domain.stat,name="整型1")
 	public int int_1;
-	@Field(domain=Domain.Stat,name="整型2")
+	@Field(domain=Domain.stat,name="整型2")
 	public int int_2;
-	@Field(domain=Domain.Stat,name="整型3")
+	@Field(domain=Domain.stat,name="整型3")
 	public int int_3;
-	@Field(domain=Domain.Stat,name="整型4")
+	@Field(domain=Domain.stat,name="整型4")
 	public int int_4;
 	//
-	@Field(domain=Domain.Stat,name="状态0")
+	@Field(domain=Domain.stat,name="状态0")
 	public int status_0;
-	@Field(domain=Domain.Stat,name="状态1")
+	@Field(domain=Domain.stat,name="状态1")
 	public int status_1;
-	@Field(domain=Domain.Stat,name="状态2")
+	@Field(domain=Domain.stat,name="状态2")
 	public int status_2;
-	@Field(domain=Domain.Stat,name="状态3")
+	@Field(domain=Domain.stat,name="状态3")
 	public int status_3;
-	@Field(domain=Domain.Stat,name="状态4")
+	@Field(domain=Domain.stat,name="状态4")
 	public int status_4;
 	//
-	@Field(domain=Domain.Money,name="小数值0")
+	@Field(domain=Domain.money,name="小数值0")
 	public BigDecimal money_0;
-	@Field(domain=Domain.Money,name="小数值1")
+	@Field(domain=Domain.money,name="小数值1")
 	public BigDecimal money_1;
-	@Field(domain=Domain.Money,name="小数值2")
+	@Field(domain=Domain.money,name="小数值2")
 	public BigDecimal money_2;
-	@Field(domain=Domain.Money,name="小数值3")
+	@Field(domain=Domain.money,name="小数值3")
 	public BigDecimal money_3;
-	@Field(domain=Domain.Money,name="小数值4")
+	@Field(domain=Domain.money,name="小数值4")
 	public BigDecimal money_4;
 	//以下为n选1
 	@Field(name="所属应用")

@@ -19,16 +19,16 @@ public class RuleDetail extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = -3461489074210806393L;
 	//
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref)
 	public String rule_id;
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref)
 	public String cond_id;
-	@Field(domain = Domain.Memo, name = "适用条件")
+	@Field(domain = Domain.memo, name = "适用条件")
 	public String cond_exp;
-	@Field(domain = Domain.Memo, name = "执行规则")
+	@Field(domain = Domain.memo, name = "执行规则")
 	public String exec_exp;
-	@Field(domain = Domain.Money, name = "序号")
+	@Field(domain = Domain.money, name = "序号")
 	public Double inum;
-	@Field(domain = Domain.Memo, name = "备注")
+	@Field(domain = Domain.memo, name = "备注")
 	public String memo;
 }

@@ -15,8 +15,10 @@ public class OrgVO extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain = Domain.Memo)
+	@Field(domain = Domain.memo)
 	public String memo;
-	@Field(domain = Domain.Stat)
+	@Field(domain = Domain.stat)
 	public Integer type =0;//0:普通;3:运营
+	@Field(domain = Domain.seriescode)
+	public String seriescode;//0:普通;3:运营
 }

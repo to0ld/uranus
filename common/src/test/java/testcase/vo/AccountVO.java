@@ -22,27 +22,27 @@ public class AccountVO implements IValueObject{
 	 */
 	private static final long serialVersionUID = 8757986141529528707L;
 	//
-	@Field(name="主键",domain=Domain.Pk)
+	@Field(name="主键",domain=Domain.pk)
 	public String pk_account;
 	
-	@Field(name="编码",domain=Domain.Code)
+	@Field(name="编码",domain=Domain.code)
 	public String code_account;
 	
-	@Field(name="会员费",domain=Domain.Money)
+	@Field(name="会员费",domain=Domain.money)
 	public BigDecimal money_account;
 	
-	@Field(name = "生日",domain=Domain.Date)
+	@Field(name = "生日",domain=Domain.date)
 	public Date date_birth;
 	
-	@Field(name = "创建时间",domain=Domain.TimeStamp)
+	@Field(name = "创建时间",domain=Domain.timestamp)
 	public Timestamp ts_crt;
 	
-	@Field(name = "状态", domain=Domain.Stat,rangeset = "0:编辑@3:处理中@5:已经完成")
+	@Field(name = "状态", domain=Domain.stat,rangeset = "0:编辑@3:处理中@5:已经完成")
 	public Integer i_stat;
 	
-	@Field(name = "用户信息备注",domain=Domain.Memo)
+	@Field(name = "用户信息备注",domain=Domain.memo)
 	public String memo_account;
-	@Field(domain=Domain.Stat)
+	@Field(domain=Domain.stat)
 	public Domain domain;
 	@Field
 	public String domainx;

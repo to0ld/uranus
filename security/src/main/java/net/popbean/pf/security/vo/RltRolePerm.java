@@ -22,10 +22,10 @@ public class RltRolePerm extends AbstractValueObject {
 	public static final int STAT_NONE = 3;// 正常
 	public static final int STAT_SEAL = 0;// 封存
 	//
-	@Field(domain = Domain.Ref, name = "角色")
+	@Field(domain = Domain.ref, name = "角色")
 	public String role_id;
-	@Field(domain = Domain.Ref, name = "权限")
+	@Field(domain = Domain.ref, name = "权限")
 	public String perm_id;
-	@Field(domain = Domain.Int, name = "序号")
+	@Field(domain = Domain.integer, name = "序号")
 	public int serial;
 }

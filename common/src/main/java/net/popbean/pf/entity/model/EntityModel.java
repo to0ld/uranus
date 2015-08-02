@@ -23,11 +23,11 @@ public class EntityModel extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -4365726099154277092L;
-	@Field(domain=Domain.Code)
+	@Field(domain=Domain.code)
 	public String code;//FIXME 对于分表的情况而言，还是要处理一下的(暂时不支持分表的情况吧)
-	@Field(domain=Domain.Code)
+	@Field(domain=Domain.code)
 	public String name;
-	@Field(domain=Domain.Memo,required=false)
+	@Field(domain=Domain.memo,required=false)
 	public String memo;
 	@Field
 	public EntityType type = EntityType.Normal;

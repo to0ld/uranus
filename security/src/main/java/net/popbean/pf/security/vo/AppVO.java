@@ -24,5 +24,5 @@ public class AppVO extends AbstractValueObject {
 	@Field(name = "备注")
 	public String memo;
 	@Field(name = "授权码")
-	public String secret_code;
+	public String secret;
 }

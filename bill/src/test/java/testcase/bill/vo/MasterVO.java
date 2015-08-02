@@ -19,6 +19,6 @@ public class MasterVO extends AbstractValueObject {
 	//
 	@Field
 	public String code;
-	@Field(domain=Domain.Memo)
+	@Field(domain=Domain.memo)
 	public String memo;
 }

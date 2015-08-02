@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.field.annotation.Entity;
 import net.popbean.pf.entity.field.annotation.Field;
+import net.popbean.pf.entity.field.annotation.RelationType;
 import net.popbean.pf.entity.impl.AbstractValueObject;
 
 /**
@@ -25,14 +26,14 @@ public class EnumRangeVO extends AbstractValueObject {
 	public String name;
 	@Field
 	public String code_value;
-	@Field(domain = Domain.Money)
+	@Field(domain = Domain.money)
 	public BigDecimal money_value;
-	@Field(domain = Domain.Money)
+	@Field(domain = Domain.money)
 	public BigDecimal money_value_max;
-	@Field(domain = Domain.Money)
+	@Field(domain = Domain.money)
 	public BigDecimal money_value_min;
-	@Field(domain = Domain.Memo)
+	@Field(domain = Domain.memo)
 	public String memo;
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref,relation=DataSetModel.class,rt=RelationType.Master)
 	public String ds_id;// ref->pk_ds:pk_ds_name
 }

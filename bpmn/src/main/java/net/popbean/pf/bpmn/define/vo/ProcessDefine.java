@@ -25,15 +25,15 @@ public class ProcessDefine extends AbstractValueObject {
 	public String cate_key;//FIXME 应该换了
 	@Field(name="扩展")
 	public String ext;//扩展 
-	@Field(domain=Domain.Code,name="标题模板")
+	@Field(domain=Domain.code,name="标题模板")
 	public String title_tpl;//列表状态显示的模板
-	@Field(domain=Domain.Memo,name="标题属性")
+	@Field(domain=Domain.memo,name="标题属性")
 	public String title_list;//FIXME 标题属性?
-	@Field(domain=Domain.Memo,name="显示模板")
+	@Field(domain=Domain.memo,name="显示模板")
 	public String msg_tpl;
-	@Field(domain=Domain.Memo,name="显示属性")
+	@Field(domain=Domain.memo,name="显示属性")
 	public String msg_list;
-	@Field(domain=Domain.Memo,name="备注")
+	@Field(domain=Domain.memo,name="备注")
 	public String memo;
 	@Field(name="流程定义文件位置")
 	public String path;

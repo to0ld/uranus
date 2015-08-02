@@ -26,24 +26,26 @@ public class PermVO extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain=Domain.Stat)
+	@Field(domain=Domain.stat)
 	public Integer type;//0:app;3:folder;5:node;7:action
 	@Field
 	public String badge;//BADGE一般对应的是一个bean
-	@Field(domain=Domain.Int)
+	@Field(domain=Domain.integer)
 	public Integer serial;//序号
-	@Field(domain=Domain.Memo)
+	@Field(domain=Domain.memo)
 	public String uri;//资源指向
-	@Field(domain=Domain.Memo)
+	@Field(domain=Domain.memo)
+	public String param;//参数：key1=value1&key2=value2
+	@Field(domain=Domain.memo)
 	public String memo;
-	@Field(domain=Domain.Ref)
+	@Field(domain=Domain.ref)
 	public String app_code;//
 	public Integer i_def;//默认节点
 	@Field(name="图标")
 	public String icon_uri;//图标
-	@Field(domain=Domain.Ref)
+	@Field(domain=Domain.ref)
 	public String folder_id;//所属目录主键
 	//
-	@Field(domain=Domain.Stat)
+	@Field(domain=Domain.stat)
 	public Integer scope = 0;//默认授权；0为private 需要授权；3为public 不需要授权
 }

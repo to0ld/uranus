@@ -22,8 +22,8 @@ public class DirectSlaveVO extends AbstractValueObject {
 	//
 	@Field
 	public String code;
-	@Field(domain = Domain.Ref,relation=MasterVO.class)
+	@Field(domain = Domain.ref,relation=MasterVO.class)
 	public String master_id;
-	@Field(domain = Domain.Memo)
+	@Field(domain = Domain.memo)
 	public String memo;
 }

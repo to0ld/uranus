@@ -18,8 +18,8 @@ public class BridgeSlaveVO extends AbstractValueObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -7285490996455405607L;
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref)
 	public String master_id;
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref)
 	public String someone_id;
 }

@@ -21,7 +21,7 @@ public class FieldModel extends AbstractValueObject {
 	public static final int REQ_YES = 3;
 	public static final int REQ_NO = 0;
 	//
-	@Field(domain=Domain.Ref)
+	@Field(domain=Domain.ref)
 	public String entity_id;
 	@Field
 	public Domain type;
@@ -31,13 +31,13 @@ public class FieldModel extends AbstractValueObject {
 	public String name;
 	@Field
 	public String rangeset;
-	@Field(domain=Domain.Stat)
+	@Field(domain=Domain.stat)
 	public int required;
 //	@Field
 //	public boolean ispk;
-	@Field(domain=Domain.Int)
+	@Field(domain=Domain.integer)
 	public int length;
-	@Field(domain=Domain.Int)
+	@Field(domain=Domain.integer)
 	public int fidelity;//没办法precison不能用，是关键字
 	@Field
 	public String def_value;
@@ -62,6 +62,6 @@ public class FieldModel extends AbstractValueObject {
 		return (required == REQ_YES);
 	}
 	public boolean isPk(){
-		return Domain.Pk.equals(type);
+		return Domain.pk.equals(type);
 	}
 }

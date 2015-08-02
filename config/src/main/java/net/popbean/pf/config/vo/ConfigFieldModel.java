@@ -13,11 +13,11 @@ public class ConfigFieldModel extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = 129090965466982441L;
 	//
-	@Field(domain = Domain.Ref)
+	@Field(domain = Domain.ref)
 	public String config_id;
 	//
 	@Field(name = "数据类型")
-	public Domain domain = Domain.Ref;// 数据类型
+	public Domain domain = Domain.ref;// 数据类型
 	@Field
 	public String code;// 对外使用的key
 	@Field
@@ -29,7 +29,7 @@ public class ConfigFieldModel extends AbstractValueObject {
 	@Field
 	public String def_value;// 默认值
 	public String store_code;// 存储所用的key
-	@Field(domain = Domain.Memo, name = "备注")
+	@Field(domain = Domain.memo, name = "备注")
 	public String memo;
 	//
 

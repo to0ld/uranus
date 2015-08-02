@@ -18,11 +18,11 @@ public class AccountVO extends AbstractValueObject {
 	 */
 	private static final long serialVersionUID = -7301638432874869014L;
 	//
-	public static int STAT_DEL = -5;//删除
+	public static int STAT_DEL = -7;//删除
+	public static int STAT_BLOCK = -5;//黑名单
 	public static int STAT_SEAL = -3;//封存
 	public static int STAT_EDIT = 0;//注册
-	public static int STAT_NONE = 3;//正常
-	public static int STAT_BLOCK = 5;//黑名单
+	public static int STAT_NONE = 5;//正常
 	
 	//
 	@Field

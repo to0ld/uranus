@@ -14,9 +14,9 @@ public abstract class AbstractConfigValueStore implements IConfigValueStore {
 	private static final long serialVersionUID = 7943339256709298640L;
 
 	//
-	@Field(domain=Domain.Pk)
+	@Field(domain=Domain.pk)
 	public String id;
-	@Field(domain=Domain.Ref,relation=ConfigModel.class)
+	@Field(domain=Domain.ref,relation=ConfigModel.class)
 	public String config_id;//通过这种方式，来建立relation，从形式上讲是冗余的
 	@Field(name="所属应用")
 	public String app_code;

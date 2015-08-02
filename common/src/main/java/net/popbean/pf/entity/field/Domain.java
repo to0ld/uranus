@@ -9,13 +9,13 @@ package net.popbean.pf.entity.field;
  *
  */
 public enum Domain{
-	Pk(60), Code(60), Date(5), TimeStamp(7), Memo(1000), Money(12),Seriescode(320),Stat(19),Clob(23),Int(29),Ref(60);
+	pk(60), code(60), date(5), timestamp(7), memo(1000), money(12),seriescode(320),stat(19),clob(23),integer(29),ref(60);
 	int _value;
 	private Domain(int value){
 		this._value = value;
 	}
 	public static Domain valueOf(int rm){
-		return Domain.Pk;
+		return Domain.pk;
 	}
 	public int getLength(){
 		return _value;

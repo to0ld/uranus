@@ -26,7 +26,7 @@ public class TaskAction extends AbstractValueObject {
 	@Field(name = "启用规则")
 	public String condition_exp;// 根据经验似乎不是所有的action在任何情况下都能用的,看起来是个expression比较合适，应该不需要上rule service
 								// 
-	@Field(name = "备注", domain = Domain.Memo)
+	@Field(name = "备注", domain = Domain.memo)
 	public String memo;
 	@Field(name="响应链接")
 	public String uri;//点击响应的uri,参数为当前的workitem，task，securitysession

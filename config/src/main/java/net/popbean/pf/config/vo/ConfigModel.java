@@ -28,9 +28,9 @@ public class ConfigModel extends AbstractValueObject {
 	public String name;
 	@Field(name="应用编码")
 	public String app_code;
-	@Field(domain=Domain.Memo,name="备注")
+	@Field(domain=Domain.memo,name="备注")
 	public String memo;
-	@Field(domain=Domain.Int,name="级别")
+	@Field(domain=Domain.integer,name="级别")
 	public int level;
 	@Field(name="存储类")
 	public String clazz;

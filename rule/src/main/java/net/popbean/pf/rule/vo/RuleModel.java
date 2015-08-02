@@ -29,9 +29,9 @@ public class RuleModel extends AbstractValueObject {
 	public String code;
 	@Field
 	public String name;
-	@Field(domain = Domain.Int, name = "返回类型")
+	@Field(domain = Domain.integer, name = "返回类型")
 	public Integer result_type;
-	@Field(domain = Domain.Memo,name="备注")
+	@Field(domain = Domain.memo,name="备注")
 	public String memo;
 
 	//

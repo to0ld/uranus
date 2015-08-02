@@ -25,12 +25,12 @@ public class EnumTestCase {
 			//构建一个有enum的pojo
 			TestVO inst = new TestVO();
 			inst.pk_test = "pk_test_value_1";
-			inst.domain = Domain.Ref;
+			inst.domain = Domain.ref;
 			String content = JSON.toJSONString(inst);
 			//如果字符串中包含了ref就算对吧
 			Assert.assertTrue(content.indexOf("Ref")!=-1,"其实java的enum挺奇葩的");
 			TestVO inst1 = JSON.parseObject(content,TestVO.class);
-			Assert.assertTrue(Domain.Ref.equals(inst1.domain),"就是string的转化");
+			Assert.assertTrue(Domain.ref.equals(inst1.domain),"就是string的转化");
 		} catch (Exception e) {
 			Assert.fail("soso", e);
 		}
@@ -41,9 +41,9 @@ public class EnumTestCase {
 		 * 
 		 */
 		private static final long serialVersionUID = -3554408395180618172L;
-		@Field(domain=Domain.Pk,code="pk_test")
+		@Field(domain=Domain.pk,code="pk_test")
 		public String pk_test;
-		@Field(domain=Domain.Code)
+		@Field(domain=Domain.code)
 		public Domain domain;
 		
 	}

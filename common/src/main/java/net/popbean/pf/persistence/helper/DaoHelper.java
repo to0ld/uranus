@@ -176,13 +176,13 @@ public class DaoHelper {
 				FieldModel field = fields.get(i);
 				if (field == null) {
 					one.put(keys[i], rs.getObject(keys[i]));
-				} else if (Domain.Clob.equals(field.type)) {
+				} else if (Domain.clob.equals(field.type)) {
 					Clob clob = rs.getClob(keys[i]);
 					if (clob != null) {// 尚未经过测试,使用缓冲，确保效率
 						one.put(keys[i], processLobColumn(clob));
 					}
 					//
-				} else if (Domain.TimeStamp.equals(field.type)) {
+				} else if (Domain.timestamp.equals(field.type)) {
 					one.put(field.code, rs.getTimestamp(keys[i]));
 				} else {
 					Object value = rs.getObject(keys[i]);
@@ -963,7 +963,7 @@ public class DaoHelper {
 		if (field == null) {
 			return false;
 		}
-		return (field.type == Domain.Clob);
+		return (field.type == Domain.clob);
 	}
 
 	/**
@@ -1120,7 +1120,7 @@ public class DaoHelper {
 				value = vo.getString(key);
 			}
 			if(!StringUtils.isBlank(value)){
-				m.appendReplacement(sb, value);
+				m.appendReplacement(sb, Matcher.quoteReplacement(value));//为了干掉那些$
 			}else{
 				m.appendReplacement(sb, "N/A");
 			}

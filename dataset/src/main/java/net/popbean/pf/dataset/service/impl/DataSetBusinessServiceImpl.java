@@ -13,7 +13,6 @@ import net.popbean.pf.dataset.vo.DataSetModel;
 import net.popbean.pf.dataset.vo.Scope;
 import net.popbean.pf.dataset.vo.SourceType;
 import net.popbean.pf.entity.helper.JOHelper;
-import net.popbean.pf.entity.helper.VOHelper;
 import net.popbean.pf.exception.BusinessError;
 import net.popbean.pf.exception.ErrorBuilder;
 import net.popbean.pf.helper.HttpHelper;
@@ -23,6 +22,7 @@ import net.popbean.pf.security.vo.SecuritySession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -60,6 +60,14 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 		}
 		return null;
 	}
+	/**
+	 * 
+	 * @param ds_unique
+	 * @param client
+	 * @return
+	 * @throws BusinessError
+	 */
+	@Cacheable(value="service/ds/model",key="ds_unique")
 	private DataSetModel findModel(String ds_unique, SecuritySession client) throws BusinessError {
 		try {
 			//
@@ -77,10 +85,10 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 				//将pk_field补上
 				for(DataSetFieldModel field:list){
 					if(field.ispk){
-						inst.pk_field = field.code_field;
+						inst.pk_field = field.code;
 					}
-					if(Scope.Data.equals(field.scope) && StringUtils.isBlank(inst.show_field)){
-						inst.show_field = field.code_field;
+					if(Scope.data.equals(field.scope) && StringUtils.isBlank(inst.show_field)){
+						inst.show_field = field.code;
 					}
 				}
 			}
@@ -109,7 +117,7 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 				for (DataSetFieldModel v : field_list) {
 					// FIXME: 同时是属性和参数呢？
 					if (v.ispk) {// 搞出主键来
-						model.pk_field = v.code_field;
+						model.pk_field = v.code;
 					}
 				}				
 			}
@@ -117,18 +125,18 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 //			
 			List<JSONObject> list = null;
 			// 第二步解析model，用规则来处理数据
-			if (SourceType.Spring.equals(model.src_type)) {// spring
+			if (SourceType.spring.equals(model.src_type)) {// spring
 				// FIXME 需要优先考虑解决
 				String exec_exp = model.exec_exp;
 				if (!StringUtils.isBlank(exec_exp)) {
 					CustomDataSetBusinessService cdbs = appctx.getBean(exec_exp, CustomDataSetBusinessService.class);// FIXME
 					list = cdbs.fetch(model, param, paging, client);
 				}
-			} else if (SourceType.Restful.equals(model.src_type)) {// restful
+			} else if (SourceType.restful.equals(model.src_type)) {// restful
 
 				list = processFromHttp(param, paging, model);
 
-			} else if (SourceType.Sql.equals(model.src_type)) {// sql
+			} else if (SourceType.sql.equals(model.src_type)) {// sql
 				// FIXME 需要优先考虑解决
 				String sql = model.exec_exp;
 				list = _commondao.paging(new StringBuilder(sql), param, paging);
@@ -184,7 +192,7 @@ public class DataSetBusinessServiceImpl extends AbstractBusinessService implemen
 			//
 			for (DataSetFieldModel field : field_list) {
 				//优先级:code_field>code_field_vendor
-				String field_code_src = StringUtils.isBlank(field.code_field_vendor)?field.code_field:field.code_field_vendor;
+				String field_code_src = StringUtils.isBlank(field.code_vendor)?field.code:field.code_vendor;
 				if (StringUtils.isBlank(field_code_src)) {
 					ErrorBuilder.createSys().msg("模型设置错误，没有找到field_code or field_code_vendor属性的设置").execute();
 				}

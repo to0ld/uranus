@@ -1,0 +1,18 @@
+{
+	"data":[
+		{
+			"code":"db_role",
+			"name":"角色数据集",
+			"app_code":"pf",
+			"src_type":"Sql",
+			"exec_exp":"select * from pb_bd_role where 1=1 ",
+			"pb_pf_ds_field":[
+				{
+					"code":"code",
+					"name":"编码",
+					"type":"code"
+				}
+			]
+		}
+	]
+}

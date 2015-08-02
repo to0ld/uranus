@@ -1,5 +1,5 @@
 package net.popbean.pf.dataset.vo;
 
 public enum SourceType {
-	Spring,Restful,Sql,Groovy
+	spring,restful,sql,groovy
 }

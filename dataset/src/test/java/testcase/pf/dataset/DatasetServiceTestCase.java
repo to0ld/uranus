@@ -80,7 +80,7 @@ public class DatasetServiceTestCase extends AbstractTestNGSpringContextTests {
 			model.code = "custom_mock";
 			model.name = "自定义-模拟";
 			model.exec_exp = "service/test/dataset/wokao";
-			model.src_type = SourceType.Spring;//FIXME 应该制定策略，entity不能使用enum
+			model.src_type = SourceType.spring;//FIXME 应该制定策略，entity不能使用enum
 			//保存模型
 			String pk_ds = commonService.save(model, null);
 			//
@@ -114,13 +114,13 @@ public class DatasetServiceTestCase extends AbstractTestNGSpringContextTests {
 		 * 
 		 */
 		private static final long serialVersionUID = 3340290832096001736L;
-		@Field(domain = Domain.Pk)
+		@Field(domain = Domain.pk)
 		public String custmer_id;
 		@Field
 		public String custmer_code;
 		@Field
 		public String custmer_name;
-		@Field(domain = Domain.Memo)
+		@Field(domain = Domain.memo)
 		public String custmer_memo;
 	}
 }

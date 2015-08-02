@@ -25,7 +25,7 @@ public class BillModelHelper {
 			return null;
 		}
 		for(BillFieldModel fm:field_list){
-			if(Domain.Pk.equals(fm.domain)){
+			if(Domain.pk.equals(fm.type)){
 				return fm;
 			}
 		}
@@ -77,7 +77,7 @@ public class BillModelHelper {
 		if(rm!=null && !RelationModel.TYPE_BRIDGE.equals(rm.type)){
 			FieldModel fm = new FieldModel();
 			fm.code = rm.id_key_slave;
-			fm.type = Domain.Ref;
+			fm.type = Domain.ref;
 			ret.field_list.add(fm);
 		}
 		return ret;
@@ -86,8 +86,8 @@ public class BillModelHelper {
 		FieldModel ret = new FieldModel();
 		ret.code = model.code;
 		ret.name = model.name;
-		ret.type = model.domain;
-		ret.length = model.domain.getLength();
+		ret.type = model.type;
+		ret.length = model.type.getLength();
 		return ret;
 	}
 }

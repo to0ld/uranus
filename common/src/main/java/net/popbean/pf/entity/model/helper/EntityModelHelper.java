@@ -50,6 +50,7 @@ public class EntityModelHelper {
 		model = new EntityModel();
 		model.clazz = clazz.getName();
 		model.code = entity.code();
+		model.type = entity.type();
 		if(StringUtils.isBlank(entity.name())){
 			model.name = entity.code();
 		}else{
@@ -72,7 +73,7 @@ public class EntityModelHelper {
 			return null;
 		}
 		for(FieldModel fm:field_list){
-			if(Domain.Pk.equals(fm.type)){
+			if(Domain.pk.equals(fm.type)){
 				return fm;
 			}
 		}
@@ -116,12 +117,12 @@ public class EntityModelHelper {
 			rm.code = entity.code;
 			int loop = 0;//够2才能跑,暂时不管一个entity中多个master，多个slave的情况
 			for(FieldModel fm:entity.field_list){
-				if(Domain.Ref.equals(fm.type) && !RelationType.Master.equals(fm.rt)){
+				if(Domain.ref.equals(fm.type) && RelationType.Master.equals(fm.rt)){
 					loop+=1;//FIXME 如果要知道准确的少了啥多了啥，就采用i_master,i_slave
 					rm.id_key_main = fm.code;
 					rm.entity_code_main = fm.relation_code;
 				}
-				if(Domain.Ref.equals(fm.type) && !RelationType.Slave.equals(fm.rt)){
+				if(Domain.ref.equals(fm.type) && RelationType.Slave.equals(fm.rt)){
 					loop+=1;
 					rm.id_key_slave = fm.code;
 					rm.entity_code_slave = fm.relation_code;
@@ -136,7 +137,7 @@ public class EntityModelHelper {
 		}else{//非桥接表，找ref
 			//只要找到一个就好
 			for(FieldModel fm:entity.field_list){
-				if(Domain.Ref.equals(fm.type) && !StringUtils.isBlank(fm.relation_code)){//ref类型 且 为指定关系
+				if(Domain.ref.equals(fm.type) && !StringUtils.isBlank(fm.relation_code)){//ref类型 且 为指定关系
 					RelationModel em = new RelationModel();
 					//
 					em.code = entity.code;
@@ -192,23 +193,23 @@ public class EntityModelHelper {
 		field.name = key;
 		if(type == Types.VARCHAR){
 			if(size == 1000){//pk
-				field.type = Domain.Memo;
+				field.type = Domain.memo;
 			}else if(size == 60){// modify by yaolei02
-				field.type = Domain.Pk;
+				field.type = Domain.pk;
 			}else if(size == 120){
-				field.type = Domain.Code;
+				field.type = Domain.code;
 			}
 		}else if(type == Types.DECIMAL || type == Types.FLOAT){//后面这个是容错处理
 			int p = rs.getInt("DECIMAL_DIGITS");
 			if(p == 0){
-				field.type = Domain.Stat;
+				field.type = Domain.stat;
 				if(!StringUtils.isBlank(def)){
 					def = def.replaceAll("\\(", "");
 					def = def.replaceAll("\\)", "");
 					field.def_value = def.trim();
 				}
 			}else{
-				field.type = Domain.Money;
+				field.type = Domain.money;
 				field.fidelity = p;
 				if(!StringUtils.isBlank(def)){
 					def = def.replaceAll("\\(", "");
@@ -219,20 +220,20 @@ public class EntityModelHelper {
 				}
 			}
 		}else if(type == Types.DATE){
-			field.type = Domain.Date;
+			field.type = Domain.date;
 		}else if(type == Types.TIMESTAMP){
-			field.type = Domain.TimeStamp;
+			field.type = Domain.timestamp;
 		}else if(type == Types.CHAR){
-			field.type = Domain.Pk;
+			field.type = Domain.pk;
 		}else if(type == Types.SMALLINT || type == Types.TINYINT){
-			field.type = Domain.Stat;
+			field.type = Domain.stat;
 			if(!StringUtils.isBlank(def)){
 				def = def.replaceAll("\\(", "");
 				def = def.replaceAll("\\)", "");
 				field.def_value = def.trim();
 			}
 		}else if(type == Types.INTEGER){
-			field.type = Domain.Int;
+			field.type = Domain.integer;
 			if(!StringUtils.isBlank(def)){
 				def = def.replaceAll("\\(", "");
 				def = def.replaceAll("\\)", "");
@@ -268,8 +269,12 @@ public class EntityModelHelper {
 		model.rangeset = a.rangeset();
 		model.clazz = f.getType().getName();
 		model.length = a.domain().getLength();
+		if(a.rt()!=RelationType.None){
+			model.rt = a.rt();	
+		}
+		
 		//
-		if(Domain.Ref.equals(model.type)){//如果是ref类型，还得继续找
+		if(Domain.ref.equals(model.type)){//如果是ref类型，还得继续找
 			if(!IValueObject.class.equals(a.relation())){
 				EntityModel rlt_model = build(a.relation());
 				model.relation_code = rlt_model.code;

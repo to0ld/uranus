@@ -31,7 +31,7 @@ public class AuthenticateBusinessServiceImpl extends AbstractBusinessService imp
 	private ApplicationContext appctx;
 	//FIXME 眼下先写死，以后再作config service
 	@Value("${authen.impl}")
-	private String authen = "pf.security.authen.local";	
+	private String authen = "service/pf/security/authen/local";	
 
 
 	@Override
@@ -61,6 +61,8 @@ public class AuthenticateBusinessServiceImpl extends AbstractBusinessService imp
 		}
 	}
 	/**
+	 * 如果假定每个应用都是分开部署的，这样是不会有问题的，但是，如果将来启用个人中心，授权信息要汇聚到个人中心，那么逻辑就得改了
+	 * 个人中心显然不会一次加载所有的权限对象，而是仅仅加载本应用的
 	 * @deprecated 这个最好是放到将来的用户中心去
 	 */
 	@Cacheable(value="service/pf/security/auth",key="#account_code")
@@ -93,23 +95,23 @@ public class AuthenticateBusinessServiceImpl extends AbstractBusinessService imp
 
 			// 只查询这个用户具有的正常角色
 			JSONObject role_inst = JO.gen(
-				"PK_ACCOUNT", account_inst.id,
-				"ISTAT", AccountVO.STAT_NONE,
-				"COMPANY_CRT_ID", account_inst.company_crt_id
+				"pk_account", account_inst.id,
+				"istat", AccountVO.STAT_NONE,
+				"company_crt_id", account_inst.company_crt_id
 			);
 			//获得该用户关联的有效角色
-			sql = new StringBuilder("select a.* from rlt_role_account a left join pb_bd_role b on (a.role_id=b.id) where a.account_id=${PK_ACCOUNT} and b.istat=${ISTAT}");
+			sql = new StringBuilder("select a.* from rlt_role_account a left join pb_bd_role b on (a.role_id=b.id) where a.account_id=${PK_ACCOUNT} and b.status=${ISTAT}");
 			List<RoleVO> roleList = _commondao.query(sql, role_inst,RoleVO.class);
 			//
 			sql = new StringBuilder(" select a.* from pb_bd_company a left join pb_bd_account b on (a.id=b.company_crt_id) where 1=1 and b.id=${PK_ACCOUNT}");
-			CompanyVO company = _commondao.find(sql, JO.gen(), CompanyVO.class, null);
+			CompanyVO company = _commondao.find(sql, role_inst, CompanyVO.class, null);
 
 			//
 			
-			StringBuilder sql1 = new StringBuilder(" select b.PK_DEPT,b.DEPT_CODE,b.DEPT_NAME,b.MEMO,b.CRT_TS,b.ISTAT,b.SERIESCODE ");
+			StringBuilder sql1 = new StringBuilder(" select b.id,b.code,b.name,b.MEMO,b.CRT_TS,b.status,b.SERIESCODE ");
 			sql1.append(" from rlt_org_account a left join PB_BD_ORG b on ( a.org_id = b.id ) ");
-			sql1.append(" where a.account_id = ${PK_ACCOUNT} and b.ISTAT= 3 order by itype ");
-			OrgVO org = _commondao.find(sql1, JO.gen("PK_ACCOUNT",account_inst.id),OrgVO.class,null);
+			sql1.append(" where a.account_id = ${PK_ACCOUNT} and b.status= 3 order by a.type ");
+			OrgVO org = _commondao.find(sql1, JO.gen("pk_account",account_inst.id),OrgVO.class,null);
 			
 			//
 			SecuritySession env = new SecuritySession();

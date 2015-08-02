@@ -11,6 +11,6 @@ public class MailConfig extends AbstractConfigValueStore {
 	 */
 	private static final long serialVersionUID = -3078869389855484906L;
 	//
-	@Field(domain=Domain.Stat,code="status_0")
+	@Field(domain=Domain.stat,code="status_0")
 	public boolean error_send_mail;//发生错误后是否发出邮件
 }

@@ -33,7 +33,7 @@ public class VOTestCase {
 			System.out.println("-----------------------------");
 			AccountVO vo = new AccountVO();
 			vo.code_account="cdoe";
-			vo.domain = Domain.Pk;
+			vo.domain = Domain.pk;
 			long start = System.currentTimeMillis();
 			for (int i = 0; i < LOOP; i++) {
 				String tmp = vo.code_account;// getter
@@ -92,7 +92,7 @@ public class VOTestCase {
 			//json object
 			JSONObject jo = new JSONObject();
 			jo.put("code_account", "new_value");
-			jo.put("domain", Domain.Pk);
+			jo.put("domain", Domain.pk);
 			start = System.currentTimeMillis();
 			for (int i = 0; i < LOOP; i++) {
 				Object obj = jo.get("code_account");
@@ -278,7 +278,7 @@ public class VOTestCase {
 			
 			//
 			AccountVO target = new AccountVO();
-			target.domain = Domain.Pk;
+			target.domain = Domain.pk;
 			Object value = VOHelper.cast(Domain.class,"PK");
 			//
 			IValueObjectWrapper<AccountVO> wrapper = EntityWrapperHelper.wrapper(AccountVO.class);

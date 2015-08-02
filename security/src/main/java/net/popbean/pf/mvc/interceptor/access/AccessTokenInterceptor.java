@@ -50,7 +50,7 @@ public class AccessTokenInterceptor extends HandlerInterceptorAdapter {
 			if(token_type == null){//如果没有，就不扯淡了
 				return true;
 			}
-			if(isData(request)){//不是
+			if(isData(request)){//目前只检查了使用request body方式传递的
 				String request_token = request.getHeader(X_ACCESS_TOKEN);
 				tokenService.auth(token_type, request_token);							
 			}

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.popbean</groupId>
 	<artifactId>net.popbean.pf</artifactId>
-	<version>${popbean.version}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>net.popbean.pf</name>
 	<url>http://popbean.net</url>

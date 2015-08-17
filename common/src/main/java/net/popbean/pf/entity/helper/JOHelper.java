@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.popbean.pf.entity.IValueObject;
+import net.popbean.pf.entity.field.Domain;
 import net.popbean.pf.entity.model.EntityModel;
 import net.popbean.pf.entity.model.FieldModel;
 import net.popbean.pf.entity.model.helper.EntityModelHelper;
@@ -228,6 +229,22 @@ public class JOHelper {
 			ret.put(key, VOHelper.get(vo, key));
 		}
 		return ret;
+	}
+	/**
+	 * 类型矫正
+	 * @param f_list
+	 * @param jo
+	 * @return
+	 * @throws Exception
+	 */
+	public static JSONObject fixType(List<FieldModel> f_list, JSONObject jo) throws Exception {
+		for (int i = 0, len = f_list.size(); i < len; i++) {
+			FieldModel model = f_list.get(i);
+			if(model.type.equals(Domain.timestamp)){
+				jo.put(model.code, jo.getTimestamp(model.code));
+			}
+		}
+		return jo;
 	}
 	/**
 	 * 排除空串，解决查询的瞎拼写字符串的问题

@@ -509,6 +509,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 					sql.append(" and a.").append(key).append("=${" + originalKey + "}");
 				}
 			}
+			sql.append(" and (a.status!=-5 or a.status is null)");
 			List<JSONObject> list = _commondao.paging(sql, condition, paging);
 			return list;
 		} catch (Exception e) {

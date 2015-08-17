@@ -187,13 +187,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<!-- 
-	<distributionManagement>
-		<repository>
-			<id>osc-thirdparty</id>
-			<name>osc-thirdparty</name>
-			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
-		</repository>
-	</distributionManagement>
-	 -->
 </project>

@@ -75,6 +75,7 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 			BillDataExtendBusinessService ext = getExt(model);
 			EntityModel em = entityService.findModel(model.main.code);
 			String pkField = em.findPK().code;//可能会有没主键的，这么写不好
+			data = JOHelper.fixType(em.field_list, data);//纠正一下类型的问题
 			String pkValue = data.getString(pkField);
 			boolean isAdd = false;
 			if (StringUtils.isBlank(pkValue)) {
@@ -142,11 +143,14 @@ public class BillDataBusinessServiceImpl extends AbstractBusinessService impleme
 				List<JSONObject> list = JOHelper.ja2list(data.getJSONArray(bem.code));
 				//
 				String pk_field = bem.findPk().code;
+				List<JSONObject> new_list = new ArrayList<>();
 				for(JSONObject curror:list){//补齐主表的主键
-					curror.put(rm.id_key_slave, dataId);//补齐外键的主键，就算不用，也不误事
-					curror.put(pk_field, _commondao.genId());//补齐主键
+					JSONObject t = JOHelper.fixType(tmp.field_list, curror);
+					t.put(rm.id_key_slave, dataId);//补齐外键的主键，就算不用，也不误事
+					t.put(pk_field, _commondao.genId());//补齐主键
+					new_list.add(t);
 				}
-				_commondao.batchInsertJO(tmp, list, null);
+				_commondao.batchInsertJO(tmp, new_list, null);
 				//
 				if(RelationModel.TYPE_BRIDGE.equals(rm.type)){//桥接需要补一把数据
 					List<JSONObject> bridge_list = new ArrayList<>();

@@ -130,9 +130,26 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 			sql.append(DaoHelper.Sql.insert(model, jo,null));
 		}
 		jo = fixNumber(model.field_list, jo);//FIXME 应该引申为补齐默认值为宜
+//		jo = convert(model.field_list,jo);
 		executeChange(sql, jo);
 		return pk;
 	}
+	/**
+	 * 将类型不对的都转了
+	 * @param f_list
+	 * @param jo
+	 * @return
+	 * @throws Exception
+	 *
+	protected JSONObject convert(List<FieldModel> f_list, JSONObject jo) throws Exception {
+		for (int i = 0, len = f_list.size(); i < len; i++) {
+			FieldModel model = f_list.get(i);
+			if(model.type.equals(Domain.timestamp)){
+				jo.put(model.code, jo.getTimestamp(model.code));
+			}
+		}
+		return jo;
+	}*/
 	/**
 	 * 强制把零补上
 	 * 
@@ -151,7 +168,6 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 					}else{
 						jo.put(model.code, model.def_value);// 确保填补默认值	
 					}
-					
 				}
 			}
 		}
@@ -321,8 +337,8 @@ public abstract class BaseDao<V> implements IDataAccessObject<V> {
 		return find(sql,param,(Class<T>)vo.getClass(),tech_msg);
 	}
 	public <T extends IValueObject> T find(StringBuilder sql, JSONObject param,Class<T> clazz,String tech_msg) throws Exception {
-		EntityModel model = EntityModelHelper.build(clazz);
-		FieldModel pk_field = model.findPK();
+		EntityModel model = EntityModelHelper.build(clazz,false);
+//		FieldModel pk_field = model.findPK();
 		//
 		//FIXME 就查询条件而言，得支持
 		StringBuilder sql_final = new StringBuilder(sql);// 复制一份出来

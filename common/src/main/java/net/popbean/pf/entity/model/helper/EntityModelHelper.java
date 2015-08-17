@@ -38,26 +38,34 @@ public class EntityModelHelper {
 	 * @throws Exception
 	 */
 	public static EntityModel build(Class<? extends IValueObject> clazz)throws Exception{
+		return build(clazz,true);
+	}
+	public static EntityModel build(Class<? extends IValueObject> clazz,boolean valid)throws Exception{
 		String key = clazz.getName();
 		EntityModel model = _cache.get(key);
 		if(model != null){
 			return model;
 		}
 		Entity entity = clazz.getAnnotation(Entity.class);
-		if(entity == null){
-			ErrorBuilder.createSys().msg("传入的类("+clazz+")没有定义@Entity，无法提取实体模型信息").execute();
-		}
 		model = new EntityModel();
-		model.clazz = clazz.getName();
-		model.code = entity.code();
-		model.type = entity.type();
-		if(StringUtils.isBlank(entity.name())){
-			model.name = entity.code();
-		}else{
-			model.name = entity.name();	
-		}
-		
+//		model.clazz = clazz.getName();
 		model.clazz = key;
+		if(entity == null){
+			if(valid){
+				ErrorBuilder.createSys().msg("传入的类("+clazz+")没有定义@Entity，无法提取实体模型信息").execute();				
+			}
+		}else{
+			model.code = entity.code();
+			model.type = entity.type();
+			if(StringUtils.isBlank(entity.name())){
+				model.name = entity.code();
+			}else{
+				model.name = entity.name();	
+			}			
+		}
+
+		
+		
 		List<FieldModel> fm_list = parseFieldModelList(clazz);
 		model.field_list = fm_list;
 		_cache.put(key, model);//缓存

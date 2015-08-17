@@ -59,19 +59,5 @@
 			<name>maven-central-snapshots</name>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
-	<!-- 
-		<repository>
-			<id>osc-thirdparty</id>
-			<name>osc-thirdparty</name>
-			<url>http://maven.oschina.net/content/repositories/thirdparty</url>
-		</repository>
-		 -->
-		<!-- 
-		<snapshotRepository>
-			<id>osc-3rdPartySnapshot</id>
-			<name>3rdPartySnapshot</name>
-			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
-		</snapshotRepository>
-		 -->
 	</distributionManagement>
 </project>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.util.WebUtils;
 
 /**
  * 直接使用session处理用户登陆变量的信息
@@ -43,11 +44,13 @@ public class SessionArgumentResolver implements HandlerMethodArgumentResolver {
 		return env;
 	}
 	public static SecuritySession getUISession(HttpServletRequest request) {//FIXME 叫AccountEnv? AccountSession?
-		HttpSession session = request.getSession(false);
-		if (session != null) {
-			return (SecuritySession) session.getAttribute(TOKEN);
-		} else {
-			return null;
-		}
+		SecuritySession ret = (SecuritySession)WebUtils.getSessionAttribute(request, TOKEN); 
+		return ret;
+//		HttpSession session = request.getSession(false);
+//		if (session != null) {
+//			return (SecuritySession) session.getAttribute(TOKEN);
+//		} else {
+//			return null;
+//		}
 	}
 }

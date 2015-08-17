@@ -20,7 +20,7 @@ import net.popbean.pf.rm.service.ResourceMappingBusinessService;
 import net.popbean.pf.rm.vo.ResourceMappingModel;
 import net.popbean.pf.security.vo.SecuritySession;
 @Controller
-@RequestMapping("/service/{appkey}/rm")
+@RequestMapping("/service/{appkey}/resource-mapping")
 public class ResourceMappingController extends BaseController {
 	@Autowired
 	@Qualifier("service/pf/resourcemapping")

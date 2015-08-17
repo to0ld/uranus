@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import net.popbean.pf.business.service.impl.AbstractBusinessService;
 import net.popbean.pf.entity.helper.JO;
 import net.popbean.pf.exception.BusinessError;
+import net.popbean.pf.id.helper.IdGenHelper;
 import net.popbean.pf.security.vo.AppVO;
+import net.popbean.pf.security.vo.RoleVO;
 import net.popbean.pf.security.vo.SecuritySession;
 import net.popbean.pf.srv.service.SrvManagementBusinessService;
 
@@ -32,6 +34,7 @@ public class AppSrvManagementBusinessServiceImpl extends AbstractBusinessService
 			//
 			String pk_app = param.getString("app.id");//认为还是org_code:app_code比较合适
 			//
+			String app_code = param.getString("app.code");
 			if(StringUtils.isBlank(version)){//设定为安装的情况
 				//
 				AppVO app = new AppVO();
@@ -47,11 +50,23 @@ public class AppSrvManagementBusinessServiceImpl extends AbstractBusinessService
 				StringBuilder sql = new StringBuilder("update pb_bd_app set app_badge=${BADGE} where id=${PK_APP}");
 				_commondao.executeChange(sql, JO.gen("PK_APP",pk_app,"BADGE",param.getString("app.badge")));							
 			}
+			makeRole(app_code);
 		} catch (Exception e) {
 			processError(e);
 		}
 		//
 		return null;
 	}
-
+	private void makeRole(String app_code)throws BusinessError{
+		try {
+			RoleVO inst = new RoleVO();
+			inst.id = IdGenHelper.genID(app_code,app_code+"_admin");
+			inst.code = app_code+"_admin";
+			inst.app_code = app_code;
+			inst.name = app_code+"管理员";
+			_commondao.batchReplace(Arrays.asList(inst));			
+		} catch (Exception e) {
+			processError(e);
+		}
+	}
 }

@@ -65,19 +65,31 @@ public class PermSrvManagementBusinessServiceImpl extends AbstractBusinessServic
 				//
 				PermVO pvo = JSON.parseObject(p.toJSONString(), PermVO.class);
 				pvo.app_code = appkey;
-				pvo.id = IdGenHelper.genID(appkey,pvo.code);
+				//如果是node-factory或者是resource-mapping需要单独处理
+				if("node-factory".equals(pvo.code.toLowerCase()) || "resource-mapping".equals(pvo.code.toLowerCase()) || "dashboard".equals(pvo.code.toLowerCase())){
+					pvo.id = IdGenHelper.genID(appkey,parseUri(pvo.uri));
+				}else{
+					pvo.id = IdGenHelper.genID(appkey,pvo.code);	
+				}
+				
 				insert_list.add(pvo);				
 				//
 				if(JOHelper.equalsStringValue(p, "type", "3")){//3 == folder
 					JSONArray p_children = p.getJSONArray("children");
-					for(int ii=0;ii<p_children.size();ii++){
-						JSONObject pp = p_children.getJSONObject(ii);
-						PermVO childvo = JSON.parseObject(p.toJSONString(), PermVO.class);
-						childvo.id = IdGenHelper.genID(appkey,childvo.code);
-						//补齐folder的数据
-						childvo.folder_id = IdGenHelper.genID(appkey,childvo.code);
-						childvo.app_code = appkey;
-						insert_list.add(childvo);
+					if(p_children != null){
+						for(int ii=0;ii<p_children.size();ii++){
+							JSONObject pp = p_children.getJSONObject(ii);
+							PermVO childvo = JSON.parseObject(pp.toJSONString(), PermVO.class);
+							if("node-factory".equals(childvo.code.toLowerCase()) || "resource-mapping".equals(childvo.code.toLowerCase()) || "dashboard".equals(childvo.code.toLowerCase())){
+								childvo.id = IdGenHelper.genID(appkey,parseUri(childvo.uri));
+							}else{
+								childvo.id = IdGenHelper.genID(appkey,childvo.code);	
+							}
+							//补齐folder的数据
+							childvo.folder_id = pvo.id;//IdGenHelper.genID(appkey,childvo.code);
+							childvo.app_code = appkey;
+							insert_list.add(childvo);
+						}						
 					}
 				}
 			}
@@ -99,7 +111,7 @@ public class PermSrvManagementBusinessServiceImpl extends AbstractBusinessServic
 	 */
 	private void rlt(String appkey)throws BusinessError{
 		try {
-			String role_id = appkey+":admin";
+			String role_id = appkey+":"+appkey+"_admin";//{app_key}:{app_key}_admin
 			//FIXME 1-为应用创建一个管理员角色:${appkey}_admin，主键为${app_key}:admin
 			//FIXME 2-为该角色映射该应用中所有的权限(先删除后插入)
 			StringBuilder sql = new StringBuilder("delete from rlt_role_perm where role_id=${ROLE_ID}");
@@ -122,5 +134,25 @@ public class PermSrvManagementBusinessServiceImpl extends AbstractBusinessServic
 		} catch (Exception e) {
 			processError(e);
 		}
+	}
+	/**
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	private String parseUri(String uri){
+		String[] parts = uri.split("\\?");
+		if(parts.length >1){//说明有参数
+			String[] pairs = parts[1].split("&");
+			JSONObject inst = new JSONObject();
+			for(String pair:pairs){
+				String[] tmp = pair.split("=");
+				if(tmp.length == 2){
+					inst.put(tmp[0], tmp[1]);
+				}
+			}
+			return inst.getString("code");
+		}
+		return "none";
 	}
 }

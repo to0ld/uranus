@@ -6,6 +6,7 @@ import net.popbean.pf.bill.service.BillDataBusinessService;
 import net.popbean.pf.business.service.CommonBusinessService;
 import net.popbean.pf.entity.helper.JOHelper;
 import net.popbean.pf.exception.BusinessError;
+import net.popbean.pf.mvc.controller.BaseController;
 import net.popbean.pf.security.vo.SecuritySession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 @Controller
 @RequestMapping(value = "/service/{appkey}/bill")
-public class BillDataController {
+public class BillDataController extends BaseController{
 	@Autowired
 	@Qualifier("service/pf/common")
 	CommonBusinessService commonService;
